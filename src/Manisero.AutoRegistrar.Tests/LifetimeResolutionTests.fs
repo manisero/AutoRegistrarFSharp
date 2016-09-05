@@ -14,9 +14,9 @@ let depOfNoDepsReg =  { defaultRegistration with classType = typedefof<Dependant
 
 // helpers
 
-let assertRegLengths expectedResolvedLength expectedRemainingLength output =
-    output.resolvedRegistrations.Length |> should equal expectedResolvedLength
-    output.remainingRegistrations.Length |> should equal expectedRemainingLength
+let assertRegLengths expectedResolvedLength expectedRemainingLength result =
+    result.resolvedRegistrations.Length |> should equal expectedResolvedLength
+    result.remainingRegistrations.Length |> should equal expectedRemainingLength
 
 let assertReg expectedClassType expectedLifetime reg =
     reg.classType |> should equal expectedClassType
@@ -26,14 +26,14 @@ let assertReg expectedClassType expectedLifetime reg =
 
 [<Fact>]
 let ``no dependencies -> longestLifetime``() = 
-    let result = resolveLifetime noDepsReg []
+    let result = resolveLifetime noDepsReg [] []
 
     result |> assertRegLengths 1 0
     List.head result.resolvedRegistrations |> assertReg noDepsReg.classType longestLifetime
 
 [<Fact>]
 let ``single dependency -> derived``() = 
-    let result = resolveLifetime depOfNoDepsReg [noDepsReg_lifetime]
+    let result = resolveLifetime depOfNoDepsReg [noDepsReg_lifetime] []
 
-    result |> assertRegLengths 1 1
+    result |> assertRegLengths 2 0
     List.head result.resolvedRegistrations |> assertReg depOfNoDepsReg.classType noDepsReg_lifetime.lifetime
