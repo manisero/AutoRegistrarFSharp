@@ -9,7 +9,7 @@ type Registration =
         lifetime : int option
     }
 
-let longestLifetime = 1
+let longestLifetime = Some 1
 let defaultRegistration = { classType = null; interfaceTypes = []; lifetime = None }
 
-let resolveLifetime reg otherRegs = reg
+let resolveLifetime reg otherRegs = { reg with lifetime = longestLifetime }
