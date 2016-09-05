@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="LifetimeResolution.fs" />
     <Compile Include="AutoRegistrar.fs" />
     <None Include="Script.fsx" />
   </ItemGroup>

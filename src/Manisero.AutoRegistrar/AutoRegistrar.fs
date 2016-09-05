@@ -26,5 +26,8 @@ Resolve (classToInterfaceMap, (initialMap?) -> registrations)
   - resolve it's lifetime
     - respect initialMap
     - the class derives its lifetime from its shortest living dependency
+      - dependencies are constructor parameters
+        - if more than one constructor, then exception
+    - if no dependencies, then longest possible lifetime
 
 *)
