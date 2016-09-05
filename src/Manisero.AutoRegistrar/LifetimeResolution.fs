@@ -9,7 +9,15 @@ type Registration =
         lifetime : int option
     }
 
+type ResolveLifetimeOutput =
+    {
+        resolvedRegistrations : Registration list;
+        remainingRegistrations : Registration list
+    }
+
 let longestLifetime = Some 1
 let defaultRegistration = { classType = null; interfaceTypes = []; lifetime = None }
 
-let resolveLifetime reg otherRegs = { reg with lifetime = longestLifetime }
+let resolveLifetime startReg otherRegs =
+    let resolvedStart = { startReg with lifetime = longestLifetime }
+    { resolvedRegistrations = [resolvedStart]; remainingRegistrations = otherRegs }
