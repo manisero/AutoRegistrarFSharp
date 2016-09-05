@@ -93,6 +93,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Manisero.AutoRegistrar.TestClasses\Manisero.AutoRegistrar.TestClasses.csproj">
+      <Name>Manisero.AutoRegistrar.TestClasses</Name>
+      <Project>{58520359-2697-486e-b488-542bd45e3836}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Manisero.AutoRegistrar\Manisero.AutoRegistrar.fsproj">
       <Name>Manisero.AutoRegistrar</Name>
       <Project>{2bc91ab2-bcf9-4b01-a829-67643b4562a6}</Project>

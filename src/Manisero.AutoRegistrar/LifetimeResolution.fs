@@ -5,10 +5,11 @@ open System
 type Registration =
     { 
         classType : Type; 
-        interfaceType : Type list;
-        lifetime : int
+        interfaceTypes : Type list;
+        lifetime : int option
     }
 
-let resolveLifetimes regs = null
+let longestLifetime = 1
+let defaultRegistration = { classType = null; interfaceTypes = []; lifetime = None }
 
-let resolveLifetime classType regs = null
+let resolveLifetime reg otherRegs = reg
