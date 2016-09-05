@@ -10,4 +10,15 @@
         {
         }
     }
+
+    public class MultipleConstructors
+    {
+        public MultipleConstructors()
+        {
+        }
+
+        public MultipleConstructors(NoDependencies noDependencies)
+        {
+        }
+    }
 }

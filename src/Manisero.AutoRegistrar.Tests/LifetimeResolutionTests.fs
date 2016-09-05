@@ -1,5 +1,6 @@
 ﻿module LifetimeResolutionTests
 
+open System
 open Xunit
 open FsUnit.Xunit
 open Manisero.AutoRegistrar.TestClasses
@@ -7,10 +8,12 @@ open LifetimeResolution
 
 // test data
 
-let noDepsReg = { defaultRegistration with classType = typedefof<NoDependencies> }
+let noDepsReg = { defaultRegistration with classType = typeof<NoDependencies> }
 let noDepsReg_lifetime = { noDepsReg with lifetime = Some 3 }
 
-let depOfNoDepsReg =  { defaultRegistration with classType = typedefof<DependantOf_NoDependencies> }
+let depOfNoDepsReg =  { defaultRegistration with classType = typeof<DependantOf_NoDependencies> }
+
+let multiCtorsReg =  { defaultRegistration with classType = typeof<MultipleConstructors> }
 
 // helpers
 
@@ -22,7 +25,13 @@ let assertReg expectedClassType expectedLifetime reg =
     reg.classType |> should equal expectedClassType
     reg.lifetime |> should equal expectedLifetime
 
+let assertFails exceptionType action =
+    (fun () -> action() |> ignore) |> should throw exceptionType
+
 // tests
+
+[<Fact>]
+let ``already resolved -> existing registration``() = raise (NotImplementedException())
 
 [<Fact>]
 let ``no dependencies -> longestLifetime``() = 
@@ -37,3 +46,7 @@ let ``single dependency -> derived``() =
 
     result |> assertRegLengths 2 0
     List.head result.resolvedRegistrations |> assertReg depOfNoDepsReg.classType noDepsReg_lifetime.lifetime
+
+[<Fact>]
+let ``multiple constructors -> error``() = 
+    (fun () -> resolveLifetime multiCtorsReg [] []) |> assertFails typeof<InvalidOperationException>
