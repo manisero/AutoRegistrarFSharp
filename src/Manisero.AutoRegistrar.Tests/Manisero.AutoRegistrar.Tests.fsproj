@@ -11,7 +11,7 @@
     <RootNamespace>Manisero.AutoRegistrar.Tests</RootNamespace>
     <AssemblyName>Manisero.AutoRegistrar.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <TargetFSharpCoreVersion>4.3.1.0</TargetFSharpCoreVersion>
+    <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Name>Manisero.AutoRegistrar.Tests</Name>
     <NuGetPackageImportStamp>
@@ -59,6 +59,7 @@
     <Compile Include="LifetimeResolutionTests.fs" />
     <None Include="Script.fsx" />
     <Content Include="packages.config" />
+    <Content Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">
