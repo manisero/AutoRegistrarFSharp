@@ -8,7 +8,7 @@ Notes:
   - class
   - its lifetime
   - implemented interface(s) (optional)
-- some registrations may only indicate class's lifetime without specifying implemented interface(s)
+- [nice to have] some registrations may only indicate class's lifetime without specifying implemented interface(s)
 
 DiscoverAndResolve (initialMap -> registrations)
 - get all referenced assemblies (accept some filter?)
@@ -26,8 +26,11 @@ Resolve (classToInterfaceMap, (initialMap?) -> registrations)
   - for given class, its dependencies are its parents
     - dependencies are constructor parameters
       - if more than one constructor, then exception
-  - assign "dependancy level"
-    - level = depth of the node in the tree
+  - assign "dependancy level" to all classes (registrations)
+    - level = depth of the node in the "tree"
+      - for each class with no dependencies, assign 0
+      - then, for each class whose dependencies have level assigned (all of them), assign highest dependency level + 1
+      - repeat above step until all levels are assigned
 - order classes (registrations) by dependancyLevel
 - for each class (ordered), resolve it's lifetime
   - respect initialMap
