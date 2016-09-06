@@ -21,13 +21,17 @@ MapAndResolve (initialMap, assemblies -> registrations)
 - invoke Resolve(map)
 
 Resolve (classToInterfaceMap, (initialMap?) -> registrations)
-- for each class:
-  - resolve it's dependencies' lifetimes
-  - resolve it's lifetime
-    - respect initialMap
-    - the class derives its lifetime from its shortest living dependency
-      - dependencies are constructor parameters
-        - if more than one constructor, then exception
-    - if no dependencies, then longest possible lifetime
+- build dependency tree (actually, a directed acyclic graph, DAG)
+  - node in the tree: class (or registration)
+  - for given class, its dependencies are its parents
+    - dependencies are constructor parameters
+      - if more than one constructor, then exception
+  - assign "dependancy level"
+    - level = depth of the node in the tree
+- order classes (registrations) by dependancyLevel
+- for each class (ordered), resolve it's lifetime
+  - respect initialMap
+  - the class derives its lifetime from its shortest living dependency
+  - if no dependencies, then longest possible lifetime
 
 *)
