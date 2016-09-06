@@ -46,5 +46,6 @@ ResolveLifetimes (dependencyTree, (initialMap?) -> registrations)
 
 TODO:
 - unify data types accepted / returned by functions
+- immutability or mutability?
 
 *)
