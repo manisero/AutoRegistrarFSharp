@@ -19,4 +19,13 @@ let getDepTypes (clas:Type) =
 
     ctor.GetParameters() |> Array.map (fun x -> x.ParameterType) |> Array.distinct
 
-let findReg typ (regs:Registration list) = regs.[0]
+let findReg (typ:Type) (regs:Registration list) =
+    let byClassType() = regs |> List.tryFind (fun x -> x.classType = typ)
+
+    let reg = if not typ.IsAbstract
+              then byClassType()
+              else byClassType() // TODO: by interfaces
+
+    match reg with
+    | Some reg -> reg
+    | None -> invalidOp (sprintf "Cannot find matching registration for '%s' type." typ.Name)

@@ -9,7 +9,8 @@ open DependencyGraph
 
 // test data
 
-let r1Reg = { defaultRegistration with classType = typeof<R1> }
+let r1Reg = { defaultRegistration with classType = typeof<R1>; interfaceTypes = [typeof<I1>] }
+let r2Reg = { defaultRegistration with classType = typeof<R2>; interfaceTypes = [typeof<R2_Base>; typeof<I2_1>; typeof<I2_2>] }
 
 // helpers
 
@@ -21,6 +22,7 @@ let assertFails exceptionType action =
 [<Fact>]
 let ``no ctor args -> no deps``() =
     let reg = { r1Reg with classType = r1Reg.classType }
+
     BuildDependencyGraph [reg]
 
     reg.dependencies |> should equal List.empty<Registration>
@@ -47,11 +49,19 @@ let ``getDepTypes: multiple ctors -> error``() =
 
 let findRegCases =
     [
-        (typeof<R1>, [r1Reg], r1Reg)
+        (typeof<R1>, [r1Reg], r1Reg);
+        (typeof<R2>, [r1Reg; r2Reg], r2Reg);
+        (typeof<R2_Base>, [r1Reg; r2Reg], r2Reg);
+        (typeof<I2_1>, [r1Reg; r2Reg], r2Reg);
+        (typeof<I2_2>, [r1Reg; r2Reg], r2Reg)
     ]
 
 [<Theory>]
 [<InlineData(0)>]
+[<InlineData(1)>]
+[<InlineData(2)>]
+[<InlineData(3)>]
+[<InlineData(4)>]
 let ``findReg: -> matching reg`` case =
     let (typ, regs, exp) = findRegCases.[case]
 
