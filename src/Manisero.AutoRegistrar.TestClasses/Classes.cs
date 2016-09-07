@@ -1,42 +1,30 @@
 ﻿namespace Manisero.AutoRegistrar.TestClasses
 {
-    public class NoDependencies
+    // R = Root
+    // C = Child
+
+    public class R1 {}
+
+    public class R2 {}
+
+    public class C_R1
     {
+        public C_R1(R1 p1) {}
     }
 
-    public class NoDependencies2
+    public class C_R1_R2
     {
+        public C_R1_R2(R1 p1, R2 p2) {}
     }
 
-    public class DependantOf_NoDependencies
+    public class C_R1_R1
     {
-        public DependantOf_NoDependencies(NoDependencies p1)
-        {
-        }
+        public C_R1_R1(R1 p1, R1 p2) {}
     }
 
-    public class DependantOf_NoDependencies1And2
+    public class MultiCtors
     {
-        public DependantOf_NoDependencies1And2(NoDependencies p1, NoDependencies2 p2)
-        {
-        }
-    }
-
-    public class DependantOf_NoDependencies_x2
-    {
-        public DependantOf_NoDependencies_x2(NoDependencies p1, NoDependencies p2)
-        {
-        }
-    }
-
-    public class MultipleConstructors
-    {
-        public MultipleConstructors()
-        {
-        }
-
-        public MultipleConstructors(NoDependencies p1)
-        {
-        }
+        public MultiCtors() {}
+        public MultiCtors(R1 p1) {}
     }
 }

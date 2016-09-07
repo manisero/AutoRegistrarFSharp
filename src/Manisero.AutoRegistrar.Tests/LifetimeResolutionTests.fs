@@ -8,12 +8,12 @@ open LifetimeResolution
 
 // test data
 
-let noDepsReg = { defaultRegistration with classType = typeof<NoDependencies> }
-let noDepsReg_lifetime = { noDepsReg with lifetime = Some 3 }
+let r1Reg = { defaultRegistration with classType = typeof<R1> }
+let r1Reg_lifetime = { r1Reg with lifetime = Some 3 }
 
-let depOfNoDepsReg =  { defaultRegistration with classType = typeof<DependantOf_NoDependencies> }
+let cR1Reg =  { defaultRegistration with classType = typeof<C_R1> }
 
-let multiCtorsReg =  { defaultRegistration with classType = typeof<MultipleConstructors> }
+let multiCtorsReg =  { defaultRegistration with classType = typeof<MultiCtors> }
 
 // helpers
 
@@ -35,17 +35,17 @@ let ``already resolved -> existing registration``() = raise (NotImplementedExcep
 
 [<Fact>]
 let ``no dependencies -> longestLifetime``() = 
-    let result = resolveLifetime noDepsReg [] []
+    let result = resolveLifetime r1Reg [] []
 
     result |> assertRegLengths 1 0
-    List.head result.resolvedRegistrations |> assertReg noDepsReg.classType longestLifetime
+    List.head result.resolvedRegistrations |> assertReg r1Reg.classType longestLifetime
 
 [<Fact>]
 let ``single dependency -> derived``() = 
-    let result = resolveLifetime depOfNoDepsReg [noDepsReg_lifetime] []
+    let result = resolveLifetime cR1Reg [r1Reg_lifetime] []
 
     result |> assertRegLengths 2 0
-    List.head result.resolvedRegistrations |> assertReg depOfNoDepsReg.classType noDepsReg_lifetime.lifetime
+    List.head result.resolvedRegistrations |> assertReg cR1Reg.classType r1Reg_lifetime.lifetime
 
 [<Fact>]
 let ``multiple constructors -> error``() = 

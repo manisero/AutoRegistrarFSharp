@@ -9,8 +9,7 @@ open DependencyGraph
 
 // test data
 
-let noDepsReg = { defaultRegistration with classType = typeof<NoDependencies> }
-let depOfNoDepsReg =  { defaultRegistration with classType = typeof<DependantOf_NoDependencies> }
+let r1Reg = { defaultRegistration with classType = typeof<R1> }
 
 // helpers
 
@@ -21,7 +20,7 @@ let assertFails exceptionType action =
 
 [<Fact>]
 let ``no ctor args -> no deps``() =
-    let reg = { noDepsReg with classType = noDepsReg.classType }
+    let reg = { r1Reg with classType = r1Reg.classType }
     BuildDependencyGraph [reg]
 
     reg.dependencies |> should equal List.empty<Registration>
@@ -29,10 +28,10 @@ let ``no ctor args -> no deps``() =
 // getDependencyTypes
 
 [<Theory>]
-[<InlineData(typeof<NoDependencies>, null, null)>]
-[<InlineData(typeof<DependantOf_NoDependencies>, typeof<NoDependencies>, null)>]
-[<InlineData(typeof<DependantOf_NoDependencies1And2>, typeof<NoDependencies>, typeof<NoDependencies2>)>]
-[<InlineData(typeof<DependantOf_NoDependencies_x2>, typeof<NoDependencies>, null)>]
+[<InlineData(typeof<R1>, null, null)>]
+[<InlineData(typeof<C_R1>, typeof<R1>, null)>]
+[<InlineData(typeof<C_R1_R2>, typeof<R1>, typeof<R2>)>]
+[<InlineData(typeof<C_R1_R1>, typeof<R1>, null)>]
 let ``getDepTypes: -> ctor args`` clas (expDep1:Type) (expDep2:Type) =
     let exp = [|expDep1; expDep2|] |> Array.filter (fun x -> x <> null)
 
@@ -42,13 +41,13 @@ let ``getDepTypes: -> ctor args`` clas (expDep1:Type) (expDep2:Type) =
 
 [<Fact>]
 let ``getDepTypes: multiple ctors -> error``() =
-    (fun () -> getDepTypes typeof<MultipleConstructors>) |> assertFails typeof<InvalidOperationException>
+    (fun () -> getDepTypes typeof<MultiCtors>) |> assertFails typeof<InvalidOperationException>
 
 // findReg
 
 let findRegCases =
     [
-        (typeof<NoDependencies>, [noDepsReg], noDepsReg)
+        (typeof<R1>, [r1Reg], r1Reg)
     ]
 
 [<Theory>]
