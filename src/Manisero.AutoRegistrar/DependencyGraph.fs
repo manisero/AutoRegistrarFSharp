@@ -21,10 +21,13 @@ let getDepTypes (clas:Type) =
 
 let findReg (typ:Type) (regs:Registration list) =
     let byClassType() = regs |> List.tryFind (fun x -> x.classType = typ)
+    let byInterfaces() = regs |> List.tryFind (fun x -> x.interfaceTypes |> List.contains typ)
 
     let reg = if not typ.IsAbstract
               then byClassType()
-              else byClassType() // TODO: by interfaces
+              else match byClassType() with
+                    | None -> byInterfaces()
+                    | some -> some
 
     match reg with
     | Some reg -> reg

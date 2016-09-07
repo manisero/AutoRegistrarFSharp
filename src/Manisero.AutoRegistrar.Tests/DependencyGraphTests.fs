@@ -14,8 +14,8 @@ let r2Reg = { defaultRegistration with classType = typeof<R2>; interfaceTypes = 
 
 // helpers
 
-let assertFails exceptionType action =
-    (fun () -> action() |> ignore) |> should throw exceptionType
+let assertInvalidOp action =
+    (fun () -> action() |> ignore) |> should throw typeof<InvalidOperationException>
 
 // BuildDependencyGraph
 
@@ -43,7 +43,7 @@ let ``getDepTypes: -> ctor args`` clas (expDep1:Type) (expDep2:Type) =
 
 [<Fact>]
 let ``getDepTypes: multiple ctors -> error``() =
-    (fun () -> getDepTypes typeof<MultiCtors>) |> assertFails typeof<InvalidOperationException>
+    (fun () -> getDepTypes typeof<MultiCtors>) |> assertInvalidOp
 
 // findReg
 
@@ -52,8 +52,7 @@ let findRegCases =
         (typeof<R1>, [r1Reg], r1Reg);
         (typeof<R2>, [r1Reg; r2Reg], r2Reg);
         (typeof<R2_Base>, [r1Reg; r2Reg], r2Reg);
-        (typeof<I2_1>, [r1Reg; r2Reg], r2Reg);
-        (typeof<I2_2>, [r1Reg; r2Reg], r2Reg)
+        (typeof<I2_1>, [r1Reg; r2Reg], r2Reg)
     ]
 
 [<Theory>]
@@ -61,10 +60,25 @@ let findRegCases =
 [<InlineData(1)>]
 [<InlineData(2)>]
 [<InlineData(3)>]
-[<InlineData(4)>]
 let ``findReg: -> matching reg`` case =
     let (typ, regs, exp) = findRegCases.[case]
 
     let res = findReg typ regs
 
     res |> should equal exp
+
+let findRegErrorCases =
+    [
+        (typeof<R2>, [r1Reg]);
+        (typeof<R2_Base>, [r1Reg]);
+        (typeof<I2_1>, [r1Reg])
+    ]
+
+[<Theory>]
+[<InlineData(0)>]
+[<InlineData(1)>]
+[<InlineData(2)>]
+let ``findReg: no matching reg -> error`` case =
+    let (typ, regs) = findRegErrorCases.[case]
+
+    (fun () -> findReg typ regs) |> assertInvalidOp
