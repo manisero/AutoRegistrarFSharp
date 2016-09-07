@@ -30,8 +30,16 @@ let ``no ctor args -> no deps``() =
 
 [<Theory>]
 [<InlineData(typeof<NoDependencies>, null, null)>]
+[<InlineData(typeof<DependantOf_NoDependencies>, typeof<NoDependencies>, null)>]
+[<InlineData(typeof<DependantOf_NoDependencies1And2>, typeof<NoDependencies>, typeof<NoDependencies2>)>]
+[<InlineData(typeof<DependantOf_NoDependencies_x2>, typeof<NoDependencies>, null)>]
 let ``getDepTypes: -> ctor args`` clas (expDep1:Type) (expDep2:Type) =
-    let res = getDepTypes typeof<NoDependencies>
-
     let exp = [|expDep1; expDep2|] |> Array.filter (fun x -> x <> null)
+
+    let res = getDepTypes clas
+
     res |> should equal exp
+
+[<Fact>]
+let ``getDepTypes: multiple ctors -> error``() =
+    (fun () -> getDepTypes typeof<MultipleConstructors>) |> assertFails typeof<InvalidOperationException>
