@@ -43,3 +43,19 @@ let ``getDepTypes: -> ctor args`` clas (expDep1:Type) (expDep2:Type) =
 [<Fact>]
 let ``getDepTypes: multiple ctors -> error``() =
     (fun () -> getDepTypes typeof<MultipleConstructors>) |> assertFails typeof<InvalidOperationException>
+
+// findReg
+
+let findRegCases =
+    [
+        (typeof<NoDependencies>, [noDepsReg], noDepsReg)
+    ]
+
+[<Theory>]
+[<InlineData(0)>]
+let ``findReg: -> matching reg`` case =
+    let (typ, regs, exp) = findRegCases.[case]
+
+    let res = findReg typ regs
+
+    res |> should equal exp

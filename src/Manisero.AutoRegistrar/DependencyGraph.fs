@@ -1,6 +1,7 @@
 ﻿module DependencyGraph
 
 open System
+open Domain
 
 let BuildDependencyGraph regs =
     ignore null
@@ -18,4 +19,4 @@ let getDepTypes (clas:Type) =
 
     ctor.GetParameters() |> Array.map (fun x -> x.ParameterType) |> Array.distinct
 
-let findReg typ regs = ignore null
+let findReg typ (regs:Registration list) = regs.[0]
