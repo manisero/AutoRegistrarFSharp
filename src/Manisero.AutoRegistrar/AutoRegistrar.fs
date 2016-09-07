@@ -23,21 +23,21 @@ BuildDependencyMap (classToInterfaceMap -> dependencyMap)
 - for each class, resolve classes (not interfaces) it depends on
   - if interface with no implementation encountered, then exception
 
-BuildDependencyTree (dependencyMap -> dependencyTree)
-- (actually not a tree, but a directed acyclic graph, DAG)
-- node in the tree: class (or registration)
+BuildDependencyGraph (dependencyMap -> dependencyGraph)
+- (the graph is a directed acyclic graph, DAG)
+- node in the graph: class (or registration)
 - for given class, its dependencies (classes, not interfaces) are its parents
   - dependencies are constructor parameters
     - if more than one constructor, then exception
 
-AssignDependancyLevels (dependencyTree -> dependencyTree)
+AssignDependancyLevels (dependencyGraph -> dependencyGraph)
 - assign "dependancy level" to all classes (registrations)
-- level = depth of the node in the "tree"
+- level = "depth" of the node in the graph
   - for each class with no dependencies, assign 0
   - then, for each class whose dependencies have level assigned (all of them), assign highest dependency level + 1
   - repeat above step until all levels are assigned
 
-ResolveLifetimes (dependencyTree, (initialMap?) -> registrations)
+ResolveLifetimes (dependencyGraph, (initialMap?) -> registrations)
 - order classes (registrations) by dependancyLevel
 - for each class (ordered), resolve it's lifetime
   - respect initialMap
