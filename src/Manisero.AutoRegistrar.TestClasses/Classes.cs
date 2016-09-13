@@ -1,33 +1,33 @@
 ﻿namespace Manisero.AutoRegistrar.TestClasses
 {
     // R = Root
-    // C = Child
+    // Cx = Child, x => dependancy level
     // I = Interface
 
-    public interface I1 {}
-    public class R1 : I1 {}
+    public interface IR1 {}
+    public class R1 : IR1 {}
 
-    public interface I2_1 { }
-    public interface I2_2 { }
+    public interface IR2_1 { }
+    public interface IR2_2 { }
     public abstract class R2_Base {}
-    public class R2 : R2_Base, I2_1, I2_2 {}
+    public class R2 : R2_Base, IR2_1, IR2_2 {}
 
-    public class I_R1 {}
-    public class C_R1 : I_R1
+    public class IC1A_R1 {}
+    public class C1A_R1 : IC1A_R1
     {
-        public C_R1(R1 p1) {}
+        public C1A_R1(R1 p1) {}
     }
 
-    public interface I_R1_R2 {}
-    public class C_R1_R2 : I_R1_R2
+    public interface IC1B_R1_R2 {}
+    public class C1B_R1_R2 : IC1B_R1_R2
     {
-        public C_R1_R2(R1 p1, R2 p2) {}
+        public C1B_R1_R2(R1 p1, R2 p2) {}
     }
 
-    public interface I_R1_R1 {}
-    public class C_R1_R1 : I_R1_R1
+    public interface IC1C_R1_R1 {}
+    public class C1C_R1_R1 : IC1C_R1_R1
     {
-        public C_R1_R1(R1 p1, R1 p2) {}
+        public C1C_R1_R1(R1 p1, R1 p2) {}
     }
 
     public class MultiCtors

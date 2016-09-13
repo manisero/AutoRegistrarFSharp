@@ -11,7 +11,7 @@ open LifetimeResolution
 let r1Reg = { defaultRegistration with classType = typeof<R1> }
 let r1Reg_lifetime = { r1Reg with lifetime = Some 3 }
 
-let cR1Reg =  { defaultRegistration with classType = typeof<C_R1> }
+let cR1Reg =  { defaultRegistration with classType = typeof<C1A_R1> }
 
 let multiCtorsReg =  { defaultRegistration with classType = typeof<MultiCtors> }
 

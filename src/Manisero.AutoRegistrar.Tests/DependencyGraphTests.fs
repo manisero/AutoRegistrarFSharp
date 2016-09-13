@@ -9,11 +9,11 @@ open DependencyGraph
 
 // test data
 
-let r1Reg = { defaultRegistration with classType = typeof<R1>; interfaceTypes = [typeof<I1>] }
-let r2Reg = { defaultRegistration with classType = typeof<R2>; interfaceTypes = [typeof<R2_Base>; typeof<I2_1>; typeof<I2_2>] }
-let c_r1Reg = { defaultRegistration with classType = typeof<C_R1>; interfaceTypes = [typeof<I_R1>] }
-let c_r1_r2Reg = { defaultRegistration with classType = typeof<C_R1_R2>; interfaceTypes = [typeof<I_R1_R2>] }
-let c_r1_r1Reg = { defaultRegistration with classType = typeof<C_R1_R1>; interfaceTypes = [typeof<I_R1_R1>] }
+let r1Reg = { defaultRegistration with classType = typeof<R1>; interfaceTypes = [typeof<IR1>] }
+let r2Reg = { defaultRegistration with classType = typeof<R2>; interfaceTypes = [typeof<R2_Base>; typeof<IR2_1>; typeof<IR2_2>] }
+let c1aReg = { defaultRegistration with classType = typeof<C1A_R1>; interfaceTypes = [typeof<IC1A_R1>] }
+let c1bReg = { defaultRegistration with classType = typeof<C1B_R1_R2>; interfaceTypes = [typeof<IC1B_R1_R2>] }
+let c1cReg = { defaultRegistration with classType = typeof<C1C_R1_R1>; interfaceTypes = [typeof<IC1C_R1_R1>] }
 
 // helpers
 
@@ -24,9 +24,9 @@ let assertInvalidOp action =
 
 [<Theory>]
 [<InlineData(typeof<R1>, null, null)>]
-[<InlineData(typeof<C_R1>, typeof<R1>, null)>]
-[<InlineData(typeof<C_R1_R2>, typeof<R1>, typeof<R2>)>]
-[<InlineData(typeof<C_R1_R1>, typeof<R1>, null)>]
+[<InlineData(typeof<C1A_R1>, typeof<R1>, null)>]
+[<InlineData(typeof<C1B_R1_R2>, typeof<R1>, typeof<R2>)>]
+[<InlineData(typeof<C1C_R1_R1>, typeof<R1>, null)>]
 let ``getDepTypes: -> ctor args`` clas (expDep1:Type) (expDep2:Type) =
     let exp = [expDep1; expDep2] |> List.filter (fun x -> x <> null)
 
@@ -45,7 +45,7 @@ let findRegCases =
         (typeof<R1>, [r1Reg], r1Reg);
         (typeof<R2>, [r1Reg; r2Reg], r2Reg);
         (typeof<R2_Base>, [r1Reg; r2Reg], r2Reg);
-        (typeof<I2_1>, [r1Reg; r2Reg], r2Reg)
+        (typeof<IR2_1>, [r1Reg; r2Reg], r2Reg)
     ]
 
 [<Theory>]
@@ -64,7 +64,7 @@ let findRegErrorCases =
     [
         (typeof<R2>, [r1Reg]);
         (typeof<R2_Base>, [r1Reg]);
-        (typeof<I2_1>, [r1Reg])
+        (typeof<IR2_1>, [r1Reg])
     ]
 
 [<Theory>]
@@ -82,9 +82,9 @@ let getRegCopies() =
     [
         { r1Reg with classType = r1Reg.classType };
         { r2Reg with classType = r2Reg.classType };
-        { c_r1Reg with classType = c_r1Reg.classType };
-        { c_r1_r2Reg with classType = c_r1_r2Reg.classType };
-        { c_r1_r1Reg with classType = c_r1_r1Reg.classType }
+        { c1aReg with classType = c1aReg.classType };
+        { c1bReg with classType = c1bReg.classType };
+        { c1cReg with classType = c1cReg.classType }
     ]
 
 let assertRegDeps expDeps reg =
@@ -94,9 +94,9 @@ let dependencyGraphCases =
     [
         (r1Reg.classType, []);
         (r2Reg.classType, []);
-        (c_r1Reg.classType, [r1Reg]);
-        (c_r1_r2Reg.classType, [r1Reg; r2Reg]);
-        (c_r1_r1Reg.classType, [r1Reg])
+        (c1aReg.classType, [r1Reg]);
+        (c1bReg.classType, [r1Reg; r2Reg]);
+        (c1cReg.classType, [r1Reg])
     ]
 
 [<Theory>]
