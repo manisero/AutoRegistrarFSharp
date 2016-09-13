@@ -20,7 +20,7 @@ let c_r1_r1Reg = { defaultRegistration with classType = typeof<C_R1_R1>; interfa
 let assertInvalidOp action =
     (fun () -> action() |> ignore) |> should throw typeof<InvalidOperationException>
 
-// getDependencyTypes
+// getDepTypes
 
 [<Theory>]
 [<InlineData(typeof<R1>, null, null)>]
@@ -28,7 +28,7 @@ let assertInvalidOp action =
 [<InlineData(typeof<C_R1_R2>, typeof<R1>, typeof<R2>)>]
 [<InlineData(typeof<C_R1_R1>, typeof<R1>, null)>]
 let ``getDepTypes: -> ctor args`` clas (expDep1:Type) (expDep2:Type) =
-    let exp = [|expDep1; expDep2|] |> Array.filter (fun x -> x <> null)
+    let exp = [expDep1; expDep2] |> List.filter (fun x -> x <> null)
 
     let res = getDepTypes clas
 
@@ -56,7 +56,7 @@ let findRegCases =
 let ``findReg: -> matching reg`` case =
     let (typ, regs, exp) = findRegCases.[case]
 
-    let res = findReg typ regs
+    let res = findReg regs typ
 
     res |> should equal exp
 
@@ -74,7 +74,7 @@ let findRegErrorCases =
 let ``findReg: no matching reg -> error`` case =
     let (typ, regs) = findRegErrorCases.[case]
 
-    (fun () -> findReg typ regs) |> assertInvalidOp
+    (fun () -> findReg regs typ) |> assertInvalidOp
 
 // BuildDependencyGraph
 

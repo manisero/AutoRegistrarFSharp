@@ -9,9 +9,9 @@ let getDepTypes (clas:Type) =
         | [| ctor |] -> ctor
         | _ -> invalidOp (sprintf "Cannot identify dependencies of '%s' type as it does not have exactly one constructor." clas.Name)
 
-    ctor.GetParameters() |> Array.map (fun x -> x.ParameterType) |> Array.distinct
+    ctor.GetParameters() |> Array.map (fun x -> x.ParameterType) |> Array.distinct |> Array.toList
 
-let findReg (typ:Type) (regs:Registration list) =
+let findReg (regs:Registration list) (typ:Type) =
     let byClassType() = regs |> List.tryFind (fun x -> x.classType = typ)
     let byInterfaces() = regs |> List.tryFind (fun x -> x.interfaceTypes |> List.contains typ)
 
@@ -25,14 +25,9 @@ let findReg (typ:Type) (regs:Registration list) =
     | Some reg -> reg
     | None -> invalidOp (sprintf "Cannot find matching registration for '%s' type." typ.Name)
 
-let buildDependencyGraph (getDepTypes:Type -> Type[]) findReg (regs:Registration list) =
-    let depTypes = getDepTypes regs.[0].classType
-    let reg = findReg depTypes.[0] regs
-    ignore null
-    // for each reg
-    // - getDepTypes
-    // - for each type
-    //   - findReg
-    // - reg.deps <- regs
+let buildDependencyGraph (getDepTypes:Type -> Type list) (findReg:Registration list -> Type -> Registration) (regs:Registration list) =
+    let getDeps reg = reg.classType |> getDepTypes |> List.map (findReg regs)
+
+    regs |> List.iter (fun x -> x.dependencies <- getDeps x)
 
 let BuildDependencyGraph = buildDependencyGraph getDepTypes findReg
