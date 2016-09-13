@@ -47,6 +47,7 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Domain.fs" />
     <Compile Include="DependencyGraph.fs" />
+    <Compile Include="DependancyLevels.fs" />
     <Compile Include="LifetimeResolution.fs" />
     <Compile Include="AutoRegistrar.fs" />
     <None Include="Script.fsx" />
