@@ -11,6 +11,9 @@ open DependencyGraph
 
 let r1Reg = { defaultRegistration with classType = typeof<R1>; interfaceTypes = [typeof<I1>] }
 let r2Reg = { defaultRegistration with classType = typeof<R2>; interfaceTypes = [typeof<R2_Base>; typeof<I2_1>; typeof<I2_2>] }
+let c_r1Reg = { defaultRegistration with classType = typeof<C_R1>; interfaceTypes = [typeof<I_R1>] }
+let c_r1_r2Reg = { defaultRegistration with classType = typeof<C_R1_R2>; interfaceTypes = [typeof<I_R1_R2>] }
+let c_r1_r1Reg = { defaultRegistration with classType = typeof<C_R1_R1>; interfaceTypes = [typeof<I_R1_R1>] }
 
 // helpers
 
@@ -73,11 +76,39 @@ let ``findReg: no matching reg -> error`` case =
 
     (fun () -> findReg typ regs) |> assertInvalidOp
 
-// buildDependencyGraph
+// BuildDependencyGraph
 
-let buildDependencyGraphCases = null
+let getRegCopies() =
+    [
+        { r1Reg with classType = r1Reg.classType };
+        { r2Reg with classType = r2Reg.classType };
+        { c_r1Reg with classType = c_r1Reg.classType };
+        { c_r1_r2Reg with classType = c_r1_r2Reg.classType };
+        { c_r1_r1Reg with classType = c_r1_r1Reg.classType }
+    ]
 
-[<Fact>]
-let ``no ctor args -> no deps``() =
-    ignore null
-    // Do not use r1Reg / r2Reg, use their copies
+let assertRegDeps expDeps reg =
+    reg.dependencies |> should equal expDeps
+
+let dependencyGraphCases =
+    [
+        (r1Reg.classType, []);
+        (r2Reg.classType, []);
+        (c_r1Reg.classType, [r1Reg]);
+        (c_r1_r2Reg.classType, [r1Reg; r2Reg]);
+        (c_r1_r1Reg.classType, [r1Reg])
+    ]
+
+[<Theory>]
+[<InlineData(0)>]
+[<InlineData(1)>]
+[<InlineData(2)>]
+[<InlineData(3)>]
+[<InlineData(4)>]
+let ``BuildDependencyGraph: -> deps filled`` case =
+    let (regClass, expDeps) = dependencyGraphCases.[case]
+    let regs = getRegCopies()
+
+    BuildDependencyGraph regs
+
+    regs |> List.find (fun x -> x.classType = regClass) |> assertRegDeps expDeps
