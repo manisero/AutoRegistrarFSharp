@@ -3,14 +3,6 @@
 open System
 open Domain
 
-let BuildDependencyGraph regs =
-    ignore null
-    // for each reg
-    // - getDependencyTypes
-    // - for each type
-    //   - findReg
-    // reg.deps <- regs
-
 let getDepTypes (clas:Type) =
     let ctor =
         match clas.GetConstructors() with
@@ -32,3 +24,15 @@ let findReg (typ:Type) (regs:Registration list) =
     match reg with
     | Some reg -> reg
     | None -> invalidOp (sprintf "Cannot find matching registration for '%s' type." typ.Name)
+
+let buildDependencyGraph (getDepTypes:Type -> Type[]) findReg (regs:Registration list) =
+    let depTypes = getDepTypes regs.[0].classType
+    let reg = findReg depTypes.[0] regs
+    ignore null
+    // for each reg
+    // - getDepTypes
+    // - for each type
+    //   - findReg
+    // - reg.deps <- regs
+
+let BuildDependencyGraph = buildDependencyGraph getDepTypes findReg

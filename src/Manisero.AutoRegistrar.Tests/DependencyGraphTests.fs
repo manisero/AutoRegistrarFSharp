@@ -17,16 +17,6 @@ let r2Reg = { defaultRegistration with classType = typeof<R2>; interfaceTypes = 
 let assertInvalidOp action =
     (fun () -> action() |> ignore) |> should throw typeof<InvalidOperationException>
 
-// BuildDependencyGraph
-
-[<Fact>]
-let ``no ctor args -> no deps``() =
-    let reg = { r1Reg with classType = r1Reg.classType }
-
-    BuildDependencyGraph [reg]
-
-    reg.dependencies |> should equal List.empty<Registration>
-
 // getDependencyTypes
 
 [<Theory>]
@@ -82,3 +72,12 @@ let ``findReg: no matching reg -> error`` case =
     let (typ, regs) = findRegErrorCases.[case]
 
     (fun () -> findReg typ regs) |> assertInvalidOp
+
+// buildDependencyGraph
+
+let buildDependencyGraphCases = null
+
+[<Fact>]
+let ``no ctor args -> no deps``() =
+    ignore null
+    // Do not use r1Reg / r2Reg, use their copies
