@@ -90,7 +90,7 @@ let getRegCopies() =
 let assertRegDeps expDeps reg =
     reg.dependencies |> should equal expDeps
 
-let dependencyGraphCases =
+let buildDependencyGraphCases =
     [
         (r1Reg.classType, []);
         (r2Reg.classType, []);
@@ -106,7 +106,7 @@ let dependencyGraphCases =
 [<InlineData(3)>]
 [<InlineData(4)>]
 let ``BuildDependencyGraph: -> deps filled`` case =
-    let (regClass, expDeps) = dependencyGraphCases.[case]
+    let (regClass, expDeps) = buildDependencyGraphCases.[case]
     let regs = getRegCopies()
 
     BuildDependencyGraph regs
