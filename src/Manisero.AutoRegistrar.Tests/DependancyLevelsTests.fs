@@ -60,14 +60,15 @@ let ``tryAssignLvl: some deps don't have lvl -> false, dependancyLevel None`` ca
 // AssignDependancyLevels
 
 let assertRegDepLvl expLvl reg =
-    reg.dependancyLevel |> should equal expLvl
+    reg.dependancyLevel |> should equal (Some expLvl)
 
 let assignDependancyLevelsCases =
     [
         (r1Reg.classType, 0);
         (c1aReg.classType, 1);
         (c1bReg.classType, 1);
-        (c1cReg.classType, 1)
+        (c1cReg.classType, 1);
+        (c2aReg.classType, 2)
     ]
 
 [<Theory>]
@@ -75,18 +76,19 @@ let assignDependancyLevelsCases =
 [<InlineData(1)>]
 [<InlineData(2)>]
 [<InlineData(3)>]
+[<InlineData(4)>]
 let ``AssignDependancyLevels: -> dependancyLevel set`` case =
     let (regClass, expLvl) = assignDependancyLevelsCases.[case]
 
-    let regCopies = 
-        [
-            { r1Reg with classType = r1Reg.classType };
-            { r2Reg with classType = r2Reg.classType };
-            { c1aReg with classType = c1aReg.classType };
-            { c1bReg with classType = c1bReg.classType };
-            { c1cReg with classType = c1cReg.classType }
-        ]
+    let r1Reg = { r1Reg with classType = r1Reg.classType }
+    let r2Reg = { r2Reg with classType = r2Reg.classType }
+    let c1aReg = { c1aReg with dependencies = [r1Reg] }
+    let c1bReg = { c1bReg with dependencies = [r1Reg; r2Reg] }
+    let c1cReg = { c1cReg with dependencies = [r1Reg] }
+    let c2aReg = { c2aReg with dependencies = [r1Reg; c1cReg] }
 
-    AssignDependancyLevels regCopies
+    let regs = List.rev [ r1Reg; r2Reg; c1aReg; c1bReg; c1cReg; c2aReg] // Reversed to force more than one iteration over regs
 
-    regCopies |> List.find (fun x -> x.classType = regClass) |> assertRegDepLvl expLvl
+    AssignDependancyLevels regs
+
+    regs |> List.find (fun x -> x.classType = regClass) |> assertRegDepLvl expLvl
