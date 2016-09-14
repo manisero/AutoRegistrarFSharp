@@ -94,5 +94,5 @@ let ``AssignDependancyLevels: -> dependancyLevel set`` case =
     regs |> List.find (fun x -> x.classType = regClass) |> assertRegDepLvl expLvl
 
 [<Fact>]
-let ``AssignDependancyLevels: cyclic dependency -> error`` =
+let ``AssignDependancyLevels: cyclic dependency -> error``() =
     true |> should equal false // TODO
