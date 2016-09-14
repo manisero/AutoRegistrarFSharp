@@ -17,21 +17,45 @@ let c2aReg = { defaultRegistration with classType = typeof<C2A_R2_C1C>; interfac
 
 // tryAssignLvl
 
-let tryAssignLvlCases =
+let tryAssignLvlSuccessCases =
     [
-        ([{ defaultRegistration with dependancyLevel = Some 0 }], 1)
+        ([], 0);
+        ([{ defaultRegistration with dependancyLevel = Some 0 }], 1);
+        ([{ defaultRegistration with dependancyLevel = Some 1 }], 2);
+        ([{ defaultRegistration with dependancyLevel = Some 0 }; { defaultRegistration with dependancyLevel = Some 1 }], 2)
     ]
 
 [<Theory>]
 [<InlineData(0)>]
+[<InlineData(1)>]
+[<InlineData(2)>]
+[<InlineData(3)>]
 let ``tryAssignLvl: all deps have lvl -> true, dependancyLevel set`` case =
-    let (deps, expLvl) = tryAssignLvlCases.[case]
+    let (deps, expLvl) = tryAssignLvlSuccessCases.[case]
     let reg = { defaultRegistration with dependencies = deps }
 
     let res = tryAssignLvl reg
 
     reg.dependancyLevel.Value |> should equal expLvl
     res |> should equal true
+
+let tryAssignLvlFailureCases =
+    [
+        [{ defaultRegistration with dependancyLevel = None }];
+        [{ defaultRegistration with dependancyLevel = Some 1 }; { defaultRegistration with dependancyLevel = None }]
+    ]
+
+[<Theory>]
+[<InlineData(0)>]
+[<InlineData(1)>]
+let ``tryAssignLvl: some deps don't have lvl -> false, dependancyLevel None`` case =
+    let deps = tryAssignLvlFailureCases.[case]
+    let reg = { defaultRegistration with dependencies = deps }
+
+    let res = tryAssignLvl reg
+
+    reg.dependancyLevel |> should equal None
+    res |> should equal false
 
 // AssignDependancyLevels
 
