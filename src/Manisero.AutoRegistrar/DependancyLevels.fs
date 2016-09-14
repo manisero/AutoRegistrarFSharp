@@ -3,11 +3,18 @@
 open Domain
 
 let tryAssignLvl reg =
-    false
-    // no dependencies -> assign 0; true
-    // dependencies
-    //  - all dependencies have lvl -> assign highest dependency level + 1; true
-    //  - else -> false
+    let getMaxDepLvl reg = reg.dependencies |> List.map (fun x -> x.dependancyLevel) |> List.max
+
+    if (reg.dependencies |> List.forall (fun x -> x.dependancyLevel.IsSome))
+    then
+        reg.dependancyLevel <-
+            match reg.dependencies.Length with
+            | 0 -> Some 0
+            | _ -> Some ((reg |> getMaxDepLvl |> Option.get) + 1)
+        
+        true
+    else
+        false
 
 let assignDependancyLevels (tryAssignLvl:Registration -> bool) (regs:Registration list) =
     ignore null
