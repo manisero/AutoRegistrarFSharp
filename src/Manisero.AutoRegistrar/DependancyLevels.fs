@@ -20,9 +20,8 @@ let assignDependancyLevels (tryAssignLvl:Registration -> bool) (regs:Registratio
     let tryAssignAll() = regs |> List.filter (fun x -> x.dependancyLevel.IsNone)
                               |> List.fold (fun allAssigned reg -> (tryAssignLvl reg) && allAssigned) false
 
-    ignore (tryAssignAll())
-    ignore null
-    // repeat until all tryAssignLvl invocations return false:
+    while (not (tryAssignAll())) do ignore null
+    // repeat until all tryAssignLvl invocations return true:
     // - for each reg where lvl = null, tryAssignLvl
     // check if all regs have lvl
     // - if not -> exception
