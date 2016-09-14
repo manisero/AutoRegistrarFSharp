@@ -32,8 +32,8 @@ BuildDependencyGraph (dependencyMap -> dependencyGraph)
     - if more than one constructor, then exception
 
 AssignDependancyLevels (dependencyGraph -> dependencyGraph)
-- assign "dependancy level" to all classes (registrations)
-- level = "depth" of the node in the graph
+- dependancyLevel = "depth" of the node in the graph
+- assign dependancyLevel to all classes (registrations)
   - for each class with no dependencies, assign 0
   - then, for each class whose dependencies have level assigned (all of them), assign highest dependency level + 1
   - repeat above step until all levels are assigned

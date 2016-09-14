@@ -30,6 +30,12 @@
         public C1C_R1_R1(R1 p1, R1 p2) {}
     }
 
+    public interface IC2A_R2_C1C { }
+    public class C2A_R2_C1C : IC2A_R2_C1C
+    {
+        public C2A_R2_C1C(R2 p1, C1C_R1_R1 p2) { }
+    }
+
     public class MultiCtors
     {
         public MultiCtors() {}
