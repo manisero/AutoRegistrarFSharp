@@ -17,13 +17,16 @@ let tryAssignLvl reg =
         false
 
 let assignDependancyLevels (tryAssignLvl:Registration -> bool) (regs:Registration list) =
-    let tryAssignAll() = regs |> List.filter (fun x -> x.dependancyLevel.IsNone)
-                              |> List.fold (fun allAssigned reg -> (tryAssignLvl reg) && allAssigned) false
+    let hasNoLevel reg = reg.dependancyLevel.IsNone
+    let tryAssignAll regs = regs |> List.filter hasNoLevel
+                                 |> List.fold (fun anyAssined reg -> (tryAssignLvl reg) || anyAssined) false
+    
+    let mutable anyAssined = tryAssignAll regs
+    while (anyAssined) do anyAssined <- tryAssignAll regs
 
-    while (not (tryAssignAll())) do ignore null
-    // repeat until all tryAssignLvl invocations return true:
-    // - for each reg where lvl = null, tryAssignLvl
-    // check if all regs have lvl
-    // - if not -> exception
+    if (regs |> List.exists hasNoLevel)
+    then
+        let failedTypes = regs |> List.filter hasNoLevel |> List.map (fun x -> sprintf "'%s'" x.classType.FullName) |> String.concat ", "
+        invalidOp (sprintf "Cannot assign dependancy level for the following types: %s." failedTypes)
 
 let AssignDependancyLevels = assignDependancyLevels tryAssignLvl
