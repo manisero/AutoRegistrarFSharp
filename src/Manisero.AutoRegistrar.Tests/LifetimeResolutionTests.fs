@@ -1,10 +1,10 @@
 ﻿module LifetimeResolutionTests
 
-open System
 open Xunit
 open FsUnit.Xunit
 open Domain
 open Manisero.AutoRegistrar.TestClasses
+open TestsHelpers
 open LifetimeResolution
 
 // test data
@@ -18,29 +18,53 @@ let c1bReg = { defaultRegistration with classType = typeof<C1B_R1_R2>; dependenc
 let c1cReg = { defaultRegistration with classType = typeof<C1C_R1_R1>; dependencies = [r1Reg] }
 let c2aReg = { defaultRegistration with classType = typeof<C2A_R2_C1C>; dependencies = [r1Reg; c1cReg] }
 
-// tryResolve
+// resolveLifetime
 
-let tryResolveAlreadyResolvedCases =
+[<Theory>]
+[<InlineData(0)>]
+[<InlineData(1)>]
+let ``resolveLifetime: already resolved -> longestLifetime stays intact`` lifetime =
+    let reg = { defaultRegistration with lifetime = Some lifetime }
+
+    resolveLifetime reg
+
+    reg.lifetime |> should equal (Some lifetime)
+
+[<Fact>]
+let ``resolveLifetime: no deps -> lifetime = longestLifetime`` = 
+    let reg = { defaultRegistration with dependencies = [] }
+
+    resolveLifetime reg
+
+    reg.lifetime |> should equal longestLifetime
+
+let resolveLifetimeDepsCases =
     [
-        (r1RegRes, r1RegRes.lifetime);
-        (r2RegRes, r2RegRes.lifetime)
+        ([r1RegRes], 1);
+        ([r1RegRes; r2RegRes], 2);
+    ]
+
+[<Theory>]
+[<InlineData(0)>]
+let ``resolveLifetime: deps -> lifetime derived from shortest living dep`` case = 
+    let (deps, exp) = resolveLifetimeDepsCases.[case]
+    let reg = { defaultRegistration with dependencies = deps }
+
+    resolveLifetime reg
+
+    reg.lifetime |> should equal (Some exp)
+
+let resolveLifetimeErrorCases =
+    [
+        [r1Reg];
+        [r1RegRes; r2Reg]
     ]
 
 [<Theory>]
 [<InlineData(0)>]
 [<InlineData(1)>]
-let ``already resolved -> longestLifetime stays intact`` case =
-    let (reg, exp) = tryResolveAlreadyResolvedCases.[case]
+let ``resolveLifetime: dep with no lifetime -> error`` case = 
+    let deps = resolveLifetimeErrorCases.[case]
+    let reg = { defaultRegistration with dependencies = deps }
 
-    tryResolve reg
-
-    reg.lifetime |> should equal exp
-
-
-[<Fact>]
-let ``no deps -> lifetime = longestLifetime``() = 
-    raise (NotImplementedException())
-
-[<Fact>]
-let ``deps -> lifetime derived from shortest living dep``() = 
-    raise (NotImplementedException())
+    (fun () -> resolveLifetime reg) |> assertInvalidOp

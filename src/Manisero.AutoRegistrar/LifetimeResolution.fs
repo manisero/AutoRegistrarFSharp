@@ -1,3 +1,3 @@
 ﻿module LifetimeResolution
 
-let tryResolve reg = invalidOp "not implemented"
+let resolveLifetime reg = invalidOp "not implemented"
