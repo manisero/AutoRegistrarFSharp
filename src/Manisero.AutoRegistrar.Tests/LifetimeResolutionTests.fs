@@ -66,8 +66,8 @@ let resolveLifetimeErrorCases =
 [<InlineData(1)>]
 let ``resolveLifetime: dep with no lifetime -> error`` case = 
     let deps = resolveLifetimeErrorCases.[case]
-    let reg = { defaultRegistration with dependencies = deps }
-
+    let reg = { r1Reg with dependencies = deps }
+    
     (fun () -> resolveLifetime reg) |> assertInvalidOp
 
 // ResolveLifetimes
