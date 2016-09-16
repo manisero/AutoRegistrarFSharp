@@ -22,7 +22,6 @@ ResolveDependencies (assemblies, initialMap -> classToInterfaceMap)
 BuildDependencyMap (classToInterfaceMap -> dependencyMap)
 - for each class, resolve classes (not interfaces) it depends on
   - if interface with no implementation encountered, then exception
-- TODO: handle cyclic dependencies (exception)
 
 BuildDependencyGraph (dependencyMap -> dependencyGraph)
 - (the graph is a directed acyclic graph, DAG)
@@ -37,6 +36,7 @@ AssignDependancyLevels (dependencyGraph -> dependencyGraph)
   - for each class with no dependencies, assign 0
   - then, for each class whose dependencies have level assigned (all of them), assign highest dependency level + 1
   - repeat above step until all levels are assigned
+  - if cyclic dependency encountered, then exception
 
 ResolveLifetimes (dependencyGraph, (initialMap?) -> registrations)
 - order classes (registrations) by dependancyLevel
@@ -44,9 +44,5 @@ ResolveLifetimes (dependencyGraph, (initialMap?) -> registrations)
   - respect initialMap
   - the class derives its lifetime from its shortest living dependency
   - if no dependencies, then longest possible lifetime
-
-TODO:
-- unify data types accepted / returned by functions
-- immutability or mutability?
 
 *)
