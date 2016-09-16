@@ -9,12 +9,12 @@ open DependancyLevels
 
 // test data
 
-let r1Reg = { defaultRegistration with classType = typeof<R1>; interfaceTypes = [typeof<IR1>] }
-let r2Reg = { defaultRegistration with classType = typeof<R2>; interfaceTypes = [typeof<R2_Base>; typeof<IR2_1>; typeof<IR2_2>] }
-let c1aReg = { defaultRegistration with classType = typeof<C1A_R1>; interfaceTypes = [typeof<IC1A_R1>]; dependencies = [r1Reg] }
-let c1bReg = { defaultRegistration with classType = typeof<C1B_R1_R2>; interfaceTypes = [typeof<IC1B_R1_R2>]; dependencies = [r1Reg; r2Reg] }
-let c1cReg = { defaultRegistration with classType = typeof<C1C_R1_R1>; interfaceTypes = [typeof<IC1C_R1_R1>]; dependencies = [r1Reg] }
-let c2aReg = { defaultRegistration with classType = typeof<C2A_R2_C1C>; interfaceTypes = [typeof<IC2A_R2_C1C>]; dependencies = [r1Reg; c1cReg] }
+let r1Reg = { defaultRegistration with classType = typeof<R1>; }
+let r2Reg = { defaultRegistration with classType = typeof<R2>; }
+let c1aReg = { defaultRegistration with classType = typeof<C1A_R1>; dependencies = [r1Reg] }
+let c1bReg = { defaultRegistration with classType = typeof<C1B_R1_R2>; dependencies = [r1Reg; r2Reg] }
+let c1cReg = { defaultRegistration with classType = typeof<C1C_R1_R1>; dependencies = [r1Reg] }
+let c2aReg = { defaultRegistration with classType = typeof<C2A_R2_C1C>; dependencies = [r1Reg; c1cReg] }
 let selfDepReg = { defaultRegistration with classType = typeof<SelfDependency> }
 selfDepReg.dependencies <- [selfDepReg]
 let cyclicDep1Reg = { defaultRegistration with classType = typeof<CyclicDependency1> }
@@ -37,7 +37,7 @@ let tryAssignLvlSuccessCases =
 [<InlineData(1)>]
 [<InlineData(2)>]
 [<InlineData(3)>]
-let ``tryAssignLvl: all deps have lvl -> true, dependancyLevel set`` case =
+let ``tryAssignLvl: all deps have lvl -> true, dependancyLevel = highest dep lvl + 1`` case =
     let (deps, expLvl) = tryAssignLvlSuccessCases.[case]
     let reg = { defaultRegistration with dependencies = deps }
 
