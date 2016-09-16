@@ -5,6 +5,7 @@ open Xunit
 open FsUnit.Xunit
 open Domain
 open Manisero.AutoRegistrar.TestClasses
+open TestsHelpers
 open DependencyGraph
 
 // test data
@@ -14,11 +15,6 @@ let r2Reg = { defaultRegistration with classType = typeof<R2>; interfaceTypes = 
 let c1aReg = { defaultRegistration with classType = typeof<C1A_R1>; interfaceTypes = [typeof<IC1A_R1>] }
 let c1bReg = { defaultRegistration with classType = typeof<C1B_R1_R2>; interfaceTypes = [typeof<IC1B_R1_R2>] }
 let c1cReg = { defaultRegistration with classType = typeof<C1C_R1_R1>; interfaceTypes = [typeof<IC1C_R1_R1>] }
-
-// helpers
-
-let assertInvalidOp action =
-    (fun () -> action() |> ignore) |> should throw typeof<InvalidOperationException>
 
 // getDepTypes
 

@@ -55,6 +55,7 @@
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="TestsHelpers.fs" />
     <Compile Include="DependencyGraphTests.fs" />
     <Compile Include="DependancyLevelsTests.fs" />
     <Compile Include="LifetimeResolutionTests.fs" />

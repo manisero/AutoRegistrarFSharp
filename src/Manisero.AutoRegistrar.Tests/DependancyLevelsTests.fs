@@ -4,6 +4,7 @@ open Xunit
 open FsUnit.Xunit
 open Domain
 open Manisero.AutoRegistrar.TestClasses
+open TestsHelpers
 open DependancyLevels
 
 // test data
@@ -14,6 +15,12 @@ let c1aReg = { defaultRegistration with classType = typeof<C1A_R1>; interfaceTyp
 let c1bReg = { defaultRegistration with classType = typeof<C1B_R1_R2>; interfaceTypes = [typeof<IC1B_R1_R2>]; dependencies = [r1Reg; r2Reg] }
 let c1cReg = { defaultRegistration with classType = typeof<C1C_R1_R1>; interfaceTypes = [typeof<IC1C_R1_R1>]; dependencies = [r1Reg] }
 let c2aReg = { defaultRegistration with classType = typeof<C2A_R2_C1C>; interfaceTypes = [typeof<IC2A_R2_C1C>]; dependencies = [r1Reg; c1cReg] }
+let selfDepReg = { defaultRegistration with classType = typeof<SelfDependency> }
+selfDepReg.dependencies <- [selfDepReg]
+let cyclicDep1Reg = { defaultRegistration with classType = typeof<CyclicDependency1> }
+let cyclicDep2Reg = { defaultRegistration with classType = typeof<CyclicDependency2> }
+cyclicDep1Reg.dependencies <- [cyclicDep2Reg]
+cyclicDep2Reg.dependencies <- [cyclicDep1Reg]
 
 // tryAssignLvl
 
@@ -93,6 +100,16 @@ let ``AssignDependancyLevels: -> dependancyLevel set`` case =
 
     regs |> List.find (fun x -> x.classType = regClass) |> assertRegDepLvl expLvl
 
-[<Fact>]
-let ``AssignDependancyLevels: cyclic dependency -> error``() =
-    true |> should equal false // TODO
+let assignDependancyLevelsErrorCases =
+    [
+        [selfDepReg];
+        [cyclicDep1Reg; cyclicDep2Reg]
+    ]
+
+[<Theory>]
+[<InlineData(0)>]
+[<InlineData(1)>]
+let ``AssignDependancyLevels: cyclic dependency -> error`` case =
+    let regs = assignDependancyLevelsErrorCases.[case]
+
+    (fun () -> AssignDependancyLevels regs) |> assertInvalidOp
