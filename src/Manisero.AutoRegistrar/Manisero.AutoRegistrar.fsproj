@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Domain.fs" />
+    <Compile Include="DependencyMap.fs" />
     <Compile Include="DependencyGraph.fs" />
     <Compile Include="DependancyLevels.fs" />
     <Compile Include="LifetimeResolution.fs" />
