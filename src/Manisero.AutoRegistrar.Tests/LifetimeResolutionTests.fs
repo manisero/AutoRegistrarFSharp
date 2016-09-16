@@ -21,8 +21,8 @@ let c2aReg = { defaultRegistration with classType = typeof<C2A_R2_C1C>; dependen
 // resolveLifetime
 
 [<Theory>]
-[<InlineData(0)>]
 [<InlineData(1)>]
+[<InlineData(2)>]
 let ``resolveLifetime: already resolved -> longestLifetime stays intact`` lifetime =
     let reg = { defaultRegistration with lifetime = Some lifetime }
 
@@ -46,6 +46,7 @@ let resolveLifetimeDepsCases =
 
 [<Theory>]
 [<InlineData(0)>]
+[<InlineData(1)>]
 let ``resolveLifetime: deps -> lifetime derived from shortest living dep`` case = 
     let (deps, exp) = resolveLifetimeDepsCases.[case]
     let reg = { defaultRegistration with dependencies = deps }
@@ -68,3 +69,7 @@ let ``resolveLifetime: dep with no lifetime -> error`` case =
     let reg = { defaultRegistration with dependencies = deps }
 
     (fun () -> resolveLifetime reg) |> assertInvalidOp
+
+// ResolveLifetimes
+
+// TODO
