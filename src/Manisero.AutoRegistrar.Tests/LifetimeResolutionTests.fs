@@ -95,10 +95,10 @@ let ``ResolveLifetimes: -> lifetime set`` case =
 
     let r1Reg = { r1Reg with classType = r1Reg.classType; }
     let r2RegRes = { r2RegRes with classType = r2RegRes.classType }
-    let c1aReg = { c1aReg with classType = c1aReg.classType }
-    let c1bReg = { c1bReg with classType = c1bReg.classType }
-    let c1cRegRes = { c1cRegRes with classType = c1cRegRes.classType }
-    let c2aReg = { c2aReg with classType = c2aReg.classType }
+    let c1aReg = { c1aReg with dependencies = [r1Reg] }
+    let c1bReg = { c1bReg with dependencies = [r1Reg; r2RegRes] }
+    let c1cRegRes = { c1cRegRes with dependencies = [r1Reg] }
+    let c2aReg = { c2aReg with dependencies = [r1Reg; c1cRegRes] }
 
     let regs = List.rev [ c2aReg; c1cRegRes; r2RegRes; c1aReg; r1Reg; c1bReg; ] // Random order to force proper order of lifetime resolution
 
