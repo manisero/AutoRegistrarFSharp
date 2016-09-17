@@ -19,32 +19,39 @@ Automatic DI Container registrations resolver.
 
 ----------
 
-**DiscoverAssemblies** (() -> assemblies)
+**DiscoverAssemblies** *(() -> assemblies)*
 
-- get all referenced assemblies (accept some filter?)
-
-----------
-
-**ResolveDependencies** (assemblies, initialMap -> classToInterfaceMap)
-
-- scan assemblies for classes (accept some filter?)
-- build classToInterfaceMap
-  - respect initialMap
-  - if multiple classes implement given interface, do not register any of those classes as the interface's implementations
+- get all referenced assemblies
+- accept some filter?
 
 ----------
 
-**BuildDependencyGraph** (Registration list -> unit)
+**DiscoverTypes** *(assemblies -> types)*
+
+- scan assemblies for classes
+- accept some filter?
+
+----------
+
+**BuildImplementationMap** *(initialMap, types -> classToInterfacesMap)*
+
+- for each type, this type implements all implemented interfaces
+- respect initialMap
+
+----------
+
+**BuildDependencyGraph** *(Registration list -> unit)*
 
 - (the graph is a directed acyclic graph, DAG)
 - node in the graph: class (or registration)
 - for given class, its dependencies (classes, not interfaces) are its parents
   - dependencies are constructor parameters
     - if more than one constructor, then exception
+  - if multiple dependency implementations found, then exception
 
 ----------
 
-**AssignDependancyLevels** (Registration list -> unit)
+**AssignDependancyLevels** *(Registration list -> unit)*
 
 - dependancyLevel = "depth" of the node in the graph
 - assign dependancyLevel to all classes (registrations)
@@ -55,7 +62,7 @@ Automatic DI Container registrations resolver.
 
 ----------
 
-**ResolveLifetimes** (Registration list -> unit)
+**ResolveLifetimes** *(Registration list -> unit)*
 
 - order classes (registrations) by dependancyLevel
 - for each class (ordered), resolve it's lifetime

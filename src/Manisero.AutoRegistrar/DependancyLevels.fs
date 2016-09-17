@@ -3,14 +3,14 @@
 open Domain
 
 let tryAssignLvl reg =
-    let getMaxDepLvl reg = reg.dependencies |> List.map (fun x -> x.dependancyLevel) |> List.max
+    let getMaxDepLvl reg = reg.dependencies |> List.map (fun x -> x.dependancyLevel.Value) |> List.max
 
     if (reg.dependencies |> List.forall (fun x -> x.dependancyLevel.IsSome))
     then
         reg.dependancyLevel <-
             match reg.dependencies.Length with
             | 0 -> Some 0
-            | _ -> Some ((reg |> getMaxDepLvl |> Option.get) + 1)
+            | _ -> Some ((reg |> getMaxDepLvl) + 1)
         
         true
     else
