@@ -34,7 +34,7 @@ Automatic DI Container registrations resolver.
 
 ----------
 
-**BuildDependencyGraph** (dependencyMap -> dependencyGraph)
+**BuildDependencyGraph** (Registration list -> unit)
 
 - (the graph is a directed acyclic graph, DAG)
 - node in the graph: class (or registration)
@@ -44,7 +44,7 @@ Automatic DI Container registrations resolver.
 
 ----------
 
-**AssignDependancyLevels** (dependencyGraph -> dependencyGraph)
+**AssignDependancyLevels** (Registration list -> unit)
 
 - dependancyLevel = "depth" of the node in the graph
 - assign dependancyLevel to all classes (registrations)
@@ -55,7 +55,7 @@ Automatic DI Container registrations resolver.
 
 ----------
 
-**ResolveLifetimes** (dependencyGraph, (initialMap?) -> registrations)
+**ResolveLifetimes** (Registration list -> unit)
 
 - order classes (registrations) by dependancyLevel
 - for each class (ordered), resolve it's lifetime
