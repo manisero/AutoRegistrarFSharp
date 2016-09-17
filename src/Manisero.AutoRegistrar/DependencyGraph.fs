@@ -4,12 +4,23 @@ open System
 open System.Collections.Generic
 open Domain
 
-let buildInterToImplMap regs =
-    let tryAdd inter impl = null
-    
-    let res = new Dictionary<Type, Registration>()
+let buildInterToImplMap (regs:Registration list) =
+    let getInterToImplList reg = reg.interfaceTypes |> List.map (fun x -> (x, reg))
 
-    res
+    let tryAdd (map:Dictionary<Type, Registration>) (multiImpls:HashSet<Type>) (inter, impl) =
+        if (not (multiImpls.Contains inter))
+        then
+            match map.ContainsKey(inter) with
+            | false -> map.Add(inter, impl)
+            | true ->
+                map.Remove inter |> ignore
+                multiImpls.Add inter |> ignore
+    
+    let map = new Dictionary<Type, Registration>()
+    let multiImpls = new HashSet<Type>()
+
+    regs |> List.map getInterToImplList |> List.concat |> List.iter (tryAdd map multiImpls)
+    map
 
 let getDepTypes (clas:Type) =
     let ctor =

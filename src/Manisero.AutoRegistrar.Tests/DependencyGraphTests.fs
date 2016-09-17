@@ -30,10 +30,10 @@ let ``buildInterToImplMap: single impl -> inter included`` inter impl =
     let res = buildInterToImplMap regs
 
     res.ContainsKey inter |> should equal true
-    res.[inter] |> should equal impl
+    res.[inter].classType |> should equal impl
 
 [<Fact>]
-let ``buildInterToImplMap: multiple impls -> inter not included`` =
+let ``buildInterToImplMap: multiple impls -> inter not included``() =
     let regs = 
         [
             { defaultRegistration with classType = typeof<MultiImpl1>; interfaceTypes = [typeof<IMultiImpls>] };
