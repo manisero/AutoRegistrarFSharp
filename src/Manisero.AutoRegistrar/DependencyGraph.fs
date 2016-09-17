@@ -1,7 +1,15 @@
 ﻿module DependencyGraph
 
 open System
+open System.Collections.Generic
 open Domain
+
+let buildInterToImplMap regs =
+    let tryAdd inter impl = null
+    
+    let res = new Dictionary<Type, Registration>()
+
+    res
 
 let getDepTypes (clas:Type) =
     let ctor =

@@ -16,6 +16,10 @@ let c1aReg = { defaultRegistration with classType = typeof<C1A_R1>; interfaceTyp
 let c1bReg = { defaultRegistration with classType = typeof<C1B_R1_R2>; interfaceTypes = [typeof<IC1B_R1_R2>] }
 let c1cReg = { defaultRegistration with classType = typeof<C1C_R1_R1>; interfaceTypes = [typeof<IC1C_R1_R1>] }
 
+// buildInterToImplMap
+
+let ``buildInterToImplMap: single impl -> impl for each inter`` case = "TODO"
+
 // getDepTypes
 
 [<Theory>]
