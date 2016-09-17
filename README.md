@@ -34,13 +34,6 @@ Automatic DI Container registrations resolver.
 
 ----------
 
-**BuildDependencyMap** (classToInterfaceMap -> dependencyMap)
-
-- for each class, resolve classes (not interfaces) it depends on
-  - if interface with no implementation encountered, then exception
-
-----------
-
 **BuildDependencyGraph** (dependencyMap -> dependencyGraph)
 
 - (the graph is a directed acyclic graph, DAG)

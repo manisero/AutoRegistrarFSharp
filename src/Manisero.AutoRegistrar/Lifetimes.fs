@@ -1,4 +1,4 @@
-﻿module LifetimeResolution
+﻿module Lifetimes
 
 open Domain
 

@@ -49,7 +49,7 @@
     <Compile Include="DependencyMap.fs" />
     <Compile Include="DependencyGraph.fs" />
     <Compile Include="DependancyLevels.fs" />
-    <Compile Include="LifetimeResolution.fs" />
+    <Compile Include="Lifetimes.fs" />
     <Compile Include="AutoRegistrar.fs" />
     <None Include="Script.fsx" />
   </ItemGroup>
