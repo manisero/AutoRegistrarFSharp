@@ -105,3 +105,17 @@ let ``ResolveLifetimes: -> lifetime set`` case =
     ResolveLifetimes regs
 
     regs |> List.find (fun x -> x.classType = regClass) |> (fun x -> x.lifetime) |> should equal expLifetime
+
+let ResolveLifetimesErrorCases =
+    [
+        [{ r1Reg with dependancyLevel = None }];
+        [r1Reg; { r2Reg with dependancyLevel = None }];
+    ]
+
+[<Theory>]
+[<InlineData(0)>]
+[<InlineData(1)>]
+let ``ResolveLifetimes: no dependancyLevel -> error`` case = 
+    let regs = ResolveLifetimesErrorCases.[case]
+    
+    (fun () -> ResolveLifetimes regs) |> assertInvalidOp
