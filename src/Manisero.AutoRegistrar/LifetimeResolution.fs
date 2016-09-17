@@ -11,3 +11,5 @@ let resolveLifetime reg =
         then reg.lifetime <- Some (reg.dependencies |> List.map (fun x -> x.lifetime.Value) |> List.max)
     else
         invalidOp (sprintf "Cannot resolve lifetime for '%s' type as some of its dependencies do not have lifetime assigned." reg.classType.FullName)
+
+let ResolveLifetimes regs = invalidOp "not implemented"

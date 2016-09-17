@@ -66,9 +66,6 @@ let ``tryAssignLvl: some deps don't have lvl -> false, dependancyLevel None`` ca
 
 // AssignDependancyLevels
 
-let assertRegDepLvl expLvl reg =
-    reg.dependancyLevel |> should equal (Some expLvl)
-
 let assignDependancyLevelsCases =
     [
         (r1Reg.classType, 0);
@@ -94,11 +91,11 @@ let ``AssignDependancyLevels: -> dependancyLevel set`` case =
     let c1cReg = { c1cReg with dependencies = [r1Reg] }
     let c2aReg = { c2aReg with dependencies = [r1Reg; c1cReg] }
 
-    let regs = List.rev [ r1Reg; r2Reg; c1aReg; c1bReg; c1cReg; c2aReg] // Reversed to force more than one iteration over regs
+    let regs = List.rev [ c2aReg; c1cReg; r2Reg; c1aReg; r1Reg; c1bReg; ] // Random order to force more than one iteration over regs
 
     AssignDependancyLevels regs
 
-    regs |> List.find (fun x -> x.classType = regClass) |> assertRegDepLvl expLvl
+    regs |> List.find (fun x -> x.classType = regClass) |> (fun x -> x.lifetime) |> should equal (Some expLvl)
 
 let assignDependancyLevelsErrorCases =
     [
