@@ -95,7 +95,7 @@ let ``AssignDependancyLevels: -> dependancyLevel set`` case =
 
     AssignDependancyLevels regs
 
-    regs |> List.find (fun x -> x.classType = regClass) |> (fun x -> x.lifetime) |> should equal (Some expLvl)
+    regs |> List.find (fun x -> x.classType = regClass) |> (fun x -> x.dependancyLevel) |> should equal (Some expLvl)
 
 let assignDependancyLevelsErrorCases =
     [
