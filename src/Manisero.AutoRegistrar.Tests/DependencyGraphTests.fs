@@ -18,7 +18,31 @@ let c1cReg = { defaultRegistration with classType = typeof<C1C_R1_R1>; interface
 
 // buildInterToImplMap
 
-let ``buildInterToImplMap: single impl -> impl for each inter`` case = "TODO"
+[<Theory>]
+[<InlineData(typeof<IR1>, typeof<R1>)>]
+[<InlineData(typeof<R2_Base>, typeof<R2>)>]
+[<InlineData(typeof<IR2_1>, typeof<R2>)>]
+[<InlineData(typeof<IR2_2>, typeof<R2>)>]
+[<InlineData(typeof<IC1A_R1>, typeof<C1A_R1>)>]
+let ``buildInterToImplMap: single impl -> inter included`` inter impl =
+    let regs = [r1Reg; r2Reg; c1aReg]
+
+    let res = buildInterToImplMap regs
+
+    res.ContainsKey inter |> should equal true
+    res.[inter] |> should equal impl
+
+[<Fact>]
+let ``buildInterToImplMap: multiple impls -> inter not included`` =
+    let regs = 
+        [
+            { defaultRegistration with classType = typeof<MultiImpl1>; interfaceTypes = [typeof<IMultiImpls>] };
+            { defaultRegistration with classType = typeof<MultiImpl2>; interfaceTypes = [typeof<IMultiImpls>] }
+        ]
+
+    let res = buildInterToImplMap regs
+
+    res.ContainsKey typeof<IMultiImpls> |> should equal false
 
 // getDepTypes
 

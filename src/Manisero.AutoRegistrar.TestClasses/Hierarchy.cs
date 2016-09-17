@@ -35,18 +35,4 @@
     {
         public C2A_R2_C1C(R2 p1, C1C_R1_R1 p2) {}
     }
-
-    public class MultiCtors
-    {
-        public MultiCtors() {}
-        public MultiCtors(R1 p1) {}
-    }
-
-    public class SelfDependency
-    {
-        public SelfDependency(SelfDependency p1) {}
-    }
-
-    public class CyclicDependency1 { }
-    public class CyclicDependency2 { }
 }
