@@ -4,7 +4,7 @@ open System
 open System.Collections.Generic
 open Domain
 
-let buildTypeToRegMap (regs:Registration list) = // TODO: assume that classTypes and interfaceTypes are unique
+let buildTypeToRegMap (regs:Registration list) =
     let getInterToRegList reg = reg.interfaceTypes |> List.map (fun x -> (x, reg))
 
     let addToMap (map:Dictionary<Type, Registration>) (typ, reg) =
@@ -15,7 +15,7 @@ let buildTypeToRegMap (regs:Registration list) = // TODO: assume that classTypes
     let map = new Dictionary<Type, Registration>()
 
     regs |> List.map (fun x -> (x.classType, x) :: getInterToRegList x) |> List.concat |> List.iter (addToMap map)
-    map
+    map :> IDictionary<Type, Registration>
 
 let getDepTypes (clas:Type) =
     let ctor =
@@ -25,23 +25,17 @@ let getDepTypes (clas:Type) =
 
     ctor.GetParameters() |> Array.map (fun x -> x.ParameterType) |> Array.distinct |> Array.toList
 
-let findReg (regs:Registration list) (typ:Type) =
-    let byClassType() = regs |> List.tryFind (fun x -> x.classType = typ)
-    let byInterfaces() = regs |> List.tryFind (fun x -> x.interfaceTypes |> List.contains typ)
+let findReg (map:IDictionary<Type, Registration>) (typ:Type) =
+    let mutable reg = defaultRegistration
 
-    let reg = if not typ.IsAbstract
-              then byClassType()
-              else match byClassType() with
-                    | None -> byInterfaces()
-                    | some -> some
+    match map.TryGetValue(typ, &reg) with
+    | true -> reg
+    | false -> invalidOp (sprintf "Cannot find matching registration for '%s' type." typ.FullName)
 
-    match reg with
-    | Some reg -> reg
-    | None -> invalidOp (sprintf "Cannot find matching registration for '%s' type." typ.FullName)
-
-let buildDependencyGraph (getDepTypes:Type -> Type list) (findReg:Registration list -> Type -> Registration) (regs:Registration list) =
-    let getDeps reg = reg.classType |> getDepTypes |> List.map (findReg regs)
+let buildDependencyGraph (buildTypeToRegMap:Registration list -> IDictionary<Type, Registration>) (getDepTypes:Type -> Type list) (findReg:IDictionary<Type, Registration> -> Type -> Registration) (regs:Registration list) =
+    let map = buildTypeToRegMap regs
+    let getDeps reg = reg.classType |> getDepTypes |> List.map (findReg map)
 
     regs |> List.iter (fun x -> x.dependencies <- getDeps x)
 
-let BuildDependencyGraph = buildDependencyGraph getDepTypes findReg
+let BuildDependencyGraph = buildDependencyGraph buildTypeToRegMap getDepTypes findReg

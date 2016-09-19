@@ -70,39 +70,33 @@ let ``getDepTypes: multiple ctors -> error``() =
 
 let findRegCases =
     [
-        (typeof<R1>, [r1Reg], r1Reg);
-        (typeof<R2>, [r1Reg; r2Reg], r2Reg);
-        (typeof<R2_Base>, [r1Reg; r2Reg], r2Reg);
-        (typeof<IR2_1>, [r1Reg; r2Reg], r2Reg)
+        [(typeof<R1>, r1Reg);];
+        [(typeof<IR1>, r1Reg); (typeof<R1>, r1Reg); (typeof<R2>, r2Reg)]
     ]
 
 [<Theory>]
 [<InlineData(0)>]
 [<InlineData(1)>]
-[<InlineData(2)>]
-[<InlineData(3)>]
 let ``findReg: -> matching reg`` case =
-    let (typ, regs, exp) = findRegCases.[case]
+    let map = findRegCases.[case] |> dict
 
-    let res = findReg regs typ
+    let res = findReg map typeof<R1>
 
-    res |> should equal exp
+    res |> should equal r1Reg
 
 let findRegErrorCases =
     [
-        (typeof<R2>, [r1Reg]);
-        (typeof<R2_Base>, [r1Reg]);
-        (typeof<IR2_1>, [r1Reg])
+        [(typeof<R1>, r1Reg);];
+        [(typeof<IR1>, r1Reg); (typeof<R1>, r1Reg); (typeof<R2>, r2Reg)]
     ]
 
 [<Theory>]
 [<InlineData(0)>]
 [<InlineData(1)>]
-[<InlineData(2)>]
 let ``findReg: no matching reg -> error`` case =
-    let (typ, regs) = findRegErrorCases.[case]
+    let map = findRegErrorCases.[case] |> dict
 
-    (fun () -> findReg regs typ) |> assertInvalidOp
+    (fun () -> findReg map typeof<IR2_1>) |> assertInvalidOp
 
 // BuildDependencyGraph
 
