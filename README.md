@@ -36,6 +36,7 @@ Automatic DI Container registrations resolver.
 **BuildImplementationMap** *(initialMap, types -> classToInterfacesMap)*
 
 - for each type, this type implements all implemented interfaces
+  - if multiple classes implement given interface, do not register any of those classes as the interface's implementations
 - respect initialMap
 
 ----------

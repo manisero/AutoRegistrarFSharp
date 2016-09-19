@@ -7,9 +7,10 @@
     public interface IR1 {}
     public class R1 : IR1 {}
 
+    public interface IR2_Base { }
+    public abstract class R2_Base : IR2_Base { }
     public interface IR2_1 { }
     public interface IR2_2 { }
-    public abstract class R2_Base {}
     public class R2 : R2_Base, IR2_1, IR2_2 {}
 
     public class IC1A_R1 {}

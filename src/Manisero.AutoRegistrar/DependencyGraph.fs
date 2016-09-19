@@ -4,22 +4,17 @@ open System
 open System.Collections.Generic
 open Domain
 
-let buildInterToImplMap (regs:Registration list) =
-    let getInterToImplList reg = reg.interfaceTypes |> List.map (fun x -> (x, reg))
+let buildTypeToRegMap (regs:Registration list) = // TODO: assume that classTypes and interfaceTypes are unique
+    let getInterToRegList reg = reg.interfaceTypes |> List.map (fun x -> (x, reg))
 
-    let tryAdd (map:Dictionary<Type, Registration>) (multiImpls:HashSet<Type>) (inter, impl) =
-        if (not (multiImpls.Contains inter))
-        then
-            match map.ContainsKey(inter) with
-            | false -> map.Add(inter, impl)
-            | true ->
-                map.Remove inter |> ignore
-                multiImpls.Add inter |> ignore
+    let addToMap (map:Dictionary<Type, Registration>) (typ, reg) =
+        if (map.ContainsKey typ)
+        then invalidOp (sprintf "Multiple registrations found for '%s' type." typ.FullName)
+        else map.Add(typ, reg)
     
     let map = new Dictionary<Type, Registration>()
-    let multiImpls = new HashSet<Type>()
 
-    regs |> List.map getInterToImplList |> List.concat |> List.iter (tryAdd map multiImpls)
+    regs |> List.map (fun x -> (x.classType, x) :: getInterToRegList x) |> List.concat |> List.iter (addToMap map)
     map
 
 let getDepTypes (clas:Type) =

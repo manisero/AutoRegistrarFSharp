@@ -16,7 +16,7 @@ let c1aReg = { defaultRegistration with classType = typeof<C1A_R1>; interfaceTyp
 let c1bReg = { defaultRegistration with classType = typeof<C1B_R1_R2>; interfaceTypes = [typeof<IC1B_R1_R2>] }
 let c1cReg = { defaultRegistration with classType = typeof<C1C_R1_R1>; interfaceTypes = [typeof<IC1C_R1_R1>] }
 
-// buildInterToImplMap
+// buildTypeToRegMap
 
 [<Theory>]
 [<InlineData(typeof<IR1>, typeof<R1>)>]
@@ -24,25 +24,29 @@ let c1cReg = { defaultRegistration with classType = typeof<C1C_R1_R1>; interface
 [<InlineData(typeof<IR2_1>, typeof<R2>)>]
 [<InlineData(typeof<IR2_2>, typeof<R2>)>]
 [<InlineData(typeof<IC1A_R1>, typeof<C1A_R1>)>]
-let ``buildInterToImplMap: single impl -> inter included`` inter impl =
+let ``buildTypeToRegMap: single impl -> inter included`` inter impl =
     let regs = [r1Reg; r2Reg; c1aReg]
 
-    let res = buildInterToImplMap regs
+    let res = buildTypeToRegMap regs
 
     res.ContainsKey inter |> should equal true
     res.[inter].classType |> should equal impl
 
-[<Fact>]
-let ``buildInterToImplMap: multiple impls -> inter not included``() =
-    let regs = 
-        [
-            { defaultRegistration with classType = typeof<MultiImpl1>; interfaceTypes = [typeof<IMultiImpls>] };
-            { defaultRegistration with classType = typeof<MultiImpl2>; interfaceTypes = [typeof<IMultiImpls>] }
-        ]
+let buildTypeToRegMapErrorCases =
+    [
+        [(typeof<MultiImpl1>, [typeof<IMultiImpls>]); (typeof<MultiImpl2>, [typeof<IMultiImpls>])];
+        [(typeof<R2>, [typeof<IR2_1>]); (typeof<R2>, [typeof<IR2_2>])];
+        [(typeof<R2>, [typeof<R2_Base>]); (typeof<R2_Base>, [typeof<IR2_Base>])];
+    ]
 
-    let res = buildInterToImplMap regs
+[<Theory>]
+[<InlineData(0)>]
+[<InlineData(1)>]
+[<InlineData(2)>]
+let ``buildTypeToRegMap: multiple impls -> error`` case =
+    let regs = buildTypeToRegMapErrorCases.[case] |> List.map (fun (clas, inters) -> { defaultRegistration with classType = clas; interfaceTypes = inters })
 
-    res.ContainsKey typeof<IMultiImpls> |> should equal false
+    (fun () -> buildTypeToRegMap regs) |> assertInvalidOp
 
 // getDepTypes
 
