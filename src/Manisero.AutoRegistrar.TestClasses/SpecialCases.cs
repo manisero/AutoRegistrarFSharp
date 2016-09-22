@@ -15,6 +15,13 @@
         public SelfDependency(SelfDependency p1) { }
     }
 
-    public class CyclicDependency1 { }
-    public class CyclicDependency2 { }
+    public class CyclicDependency1
+    {
+        public CyclicDependency1(CyclicDependency2 p1) { }
+    }
+
+    public class CyclicDependency2
+    {
+        public CyclicDependency2(CyclicDependency1 p1) { }
+    }
 }

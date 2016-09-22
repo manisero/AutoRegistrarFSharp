@@ -12,6 +12,38 @@ open Shared
 let r1Reg = { defaultRegistration with classType = typeof<R1>; interfaceTypes = [typeof<IR1>] }
 let r2Reg = { defaultRegistration with classType = typeof<R2>; interfaceTypes = [typeof<R2_Base>; typeof<IR2_1>; typeof<IR2_2>] }
 let c1aReg = { defaultRegistration with classType = typeof<C1A_R1>; interfaceTypes = [typeof<IC1A_R1>] }
+let multiImpl1Reg = { defaultRegistration with classType = typeof<MultiImpl1>; interfaceTypes = [typeof<IMultiImpls>] }
+let multiImpl2Reg = { defaultRegistration with classType = typeof<MultiImpl2>; interfaceTypes = [typeof<IMultiImpls>] }
+
+// buildTypesSet
+
+let buildTypesSetCases =
+    [
+        ([r1Reg], [typeof<R1>; typeof<IR1>]);
+        ([r1Reg; r2Reg], [typeof<R1>; typeof<IR1>; typeof<R2>; typeof<R2_Base>; typeof<IR2_1>; typeof<IR2_2>])
+    ]
+
+[<Theory>]
+[<InlineData(0)>]
+[<InlineData(1)>]
+let ``buildTypesSet: regs -> all types in regs`` case =
+    let (regs, expTypes) = buildTypesSetCases.[case]
+    
+    let res = buildTypesSet regs
+
+    res |> should equal expTypes
+
+let buildTypesSetErrorCases =
+    [
+        [multiImpl1Reg; multiImpl2Reg]
+    ]
+
+[<Theory>]
+[<InlineData(0)>]
+let ``buildTypesSet: duplicated type -> error`` case =
+    let regs = buildTypesSetErrorCases.[case]
+
+    (fun () -> buildTypesSet regs) |> assertInvalidOp
 
 // buildTypeToRegMap
 

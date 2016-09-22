@@ -4,6 +4,15 @@ open System
 open System.Collections.Generic
 open Domain
 
+let buildTypesSet (regs:Registration list) =
+    let addToSet (set:HashSet<Type>) typ =
+        ignore (set.Add typ)
+
+    let set = new HashSet<Type>()
+    regs |> List.map (fun x -> x.classType :: x.interfaceTypes) |> List.concat |> List.iter (addToSet set)
+
+    set :> ISet<Type>
+
 let buildTypeToRegMap (regs:Registration list) =
     let getInterToRegList reg = reg.interfaceTypes |> List.map (fun x -> (x, reg))
 
