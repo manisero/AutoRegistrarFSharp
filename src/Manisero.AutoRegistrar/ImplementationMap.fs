@@ -2,13 +2,11 @@
 
 let buildTypesSet regs = null
 
-let buildTypeToRegMap regs = null // move DependencyGraph.buildTypeToRegMap and use it
-
 let getClassInterfaces typ = null
 
 let handleInterType handledTypes typeToRegMap reg inter = null
 
-let buildImplementationMap regs =
+let buildImplementationMap buildTypesSet buildTypeToRegMap getClassInterfaces handleInterType regs =
     // regs contains all registrations to fill (fill = set interfaceTypes)
     // each reg can contain lifetime, but should not contain interfaceTypes
     
