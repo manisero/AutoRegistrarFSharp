@@ -6,7 +6,9 @@ open Domain
 
 let buildTypesSet (regs:Registration list) =
     let addToSet (set:HashSet<Type>) typ =
-        ignore (set.Add typ)
+        match set.Add typ with
+        | true -> ignore null
+        | false -> invalidOp (sprintf "Multiple registrations found for '%s' type." typ.FullName)
 
     let set = new HashSet<Type>()
     regs |> List.map (fun x -> x.classType :: x.interfaceTypes) |> List.concat |> List.iter (addToSet set)

@@ -1,5 +1,6 @@
 ﻿module SharedTests
 
+open System.Linq
 open Xunit
 open FsUnit.Xunit
 open Domain
@@ -19,8 +20,8 @@ let multiImpl2Reg = { defaultRegistration with classType = typeof<MultiImpl2>; i
 
 let buildTypesSetCases =
     [
-        ([r1Reg], [typeof<R1>; typeof<IR1>]);
-        ([r1Reg; r2Reg], [typeof<R1>; typeof<IR1>; typeof<R2>; typeof<R2_Base>; typeof<IR2_1>; typeof<IR2_2>])
+        ([r1Reg], [|typeof<R1>; typeof<IR1>|]);
+        ([r1Reg; r2Reg], [|typeof<R1>; typeof<IR1>; typeof<R2>; typeof<R2_Base>; typeof<IR2_1>; typeof<IR2_2>|])
     ]
 
 [<Theory>]
@@ -31,7 +32,7 @@ let ``buildTypesSet: regs -> all types in regs`` case =
     
     let res = buildTypesSet regs
 
-    res |> should equal expTypes
+    res.ToArray() |> should equal expTypes
 
 let buildTypesSetErrorCases =
     [
