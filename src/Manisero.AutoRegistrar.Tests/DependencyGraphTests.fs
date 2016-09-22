@@ -109,9 +109,6 @@ let getRegCopies() =
         { c1cReg with classType = c1cReg.classType }
     ]
 
-let assertRegDeps expDeps reg =
-    reg.dependencies |> should equal expDeps
-
 let buildDependencyGraphCases =
     [
         (r1Reg.classType, []);
@@ -133,4 +130,4 @@ let ``BuildDependencyGraph: -> deps filled`` case =
 
     BuildDependencyGraph regs
 
-    regs |> List.find (fun x -> x.classType = regClass) |> assertRegDeps expDeps
+    regs |> List.find (fun x -> x.classType = regClass) |> (fun x -> x.dependencies) |> should equal expDeps
