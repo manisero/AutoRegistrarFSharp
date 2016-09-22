@@ -1,6 +1,7 @@
 ﻿module ImplementationMap
 
-let getClassInterfaces typ = null
+let getClassInterfaces typ =
+    []
 
 let handleInterType handledTypes typeToRegMap reg inter = null
 

@@ -1,5 +1,7 @@
 ﻿namespace Manisero.AutoRegistrar.TestClasses
 {
+    public class NoInters { }
+
     public interface IMultiImpls { }
     public class MultiImpl1 : IMultiImpls { }
     public class MultiImpl2 : IMultiImpls { }
