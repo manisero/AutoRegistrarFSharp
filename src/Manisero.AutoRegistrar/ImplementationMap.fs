@@ -26,10 +26,6 @@ let handleInterType handledTypes typeToRegMap reg inter = ignore null
     //   - add it to class's interfaceTypes
     //   - add it to typeToRegMap
 
-    // if multiple classes implement given interface, then this interface should not appear in any of those classes' interfaceTypes
-    // - e.g. IDisposable can be implemented by multiple classes
-    // if a base class of given class is any reg's classType, then the base class should not appear in the class's interfaceTypes
-
 let BuildImplementationMap regs =
     let handleInters handledTypes typeToRegMap reg = reg.classType |> getClassInterfaces |> List.iter (handleInterType handledTypes typeToRegMap reg)
 
