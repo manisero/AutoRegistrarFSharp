@@ -28,3 +28,9 @@ let ``getClassInterfaces: class -> immediate base class and implemented interfac
     let res = getClassInterfaces typ
 
     res.ToArray() |> should equal expInter
+
+// handleInterType
+
+// BuildImplementationMap
+// classType is interface -> error
+// interfaceType isSome -> error
