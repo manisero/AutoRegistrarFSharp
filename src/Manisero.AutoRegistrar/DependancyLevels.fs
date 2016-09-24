@@ -16,7 +16,7 @@ let tryAssignLvl reg =
     else
         false
 
-let assignDependancyLevels (tryAssignLvl:Registration -> bool) (regs:Registration list) =
+let AssignDependancyLevels regs =
     let hasNoLevel reg = reg.dependancyLevel.IsNone
     let tryAssignAll regs = regs |> List.filter hasNoLevel
                                  |> List.fold (fun anyAssined reg -> (tryAssignLvl reg) || anyAssined) false
@@ -28,5 +28,3 @@ let assignDependancyLevels (tryAssignLvl:Registration -> bool) (regs:Registratio
     then
         let failedTypes = regs |> List.filter hasNoLevel |> List.map (fun x -> sprintf "'%s'" x.classType.FullName) |> String.concat ", "
         invalidOp (sprintf "Cannot assign dependancy level for the following types: %s." failedTypes)
-
-let AssignDependancyLevels = assignDependancyLevels tryAssignLvl
