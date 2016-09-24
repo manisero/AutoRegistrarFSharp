@@ -1,5 +1,6 @@
 ﻿module ImplementationMap
 
+open Domain
 open System
 
 let getClassInterfaces (typ:Type) =
@@ -10,6 +11,20 @@ let getClassInterfaces (typ:Type) =
 let handleInterType handledTypes typeToRegMap reg inter = null
 
 let buildImplementationMap buildTypesSet buildTypeToRegMap getClassInterfaces handleInterType regs =
+    let validateReg reg =
+        match reg.classType.IsAbstract with
+        | true -> invalidOp (sprintf "'%s' cannot be set as Registration.classType as it is abstract." reg.classType.FullName)
+        | _ -> ignore null
+
+    let handleInters handledTypes typeToRegMap reg = reg.classType |> getClassInterfaces |> List.iter (handleInterType handledTypes typeToRegMap)
+
+    regs |> List.iter validateReg
+
+    let handledTypes = buildTypesSet regs
+    let typeToRegMap = buildTypeToRegMap regs
+
+    regs |> List.filter (fun x -> x.interfaceTypes.IsNone) |> List.iter (handleInters handledTypes typeToRegMap)
+
     // regs contains all registrations to fill (fill = set interfaceTypes)
     // each reg can contain lifetime, but should not contain interfaceTypes
     

@@ -10,11 +10,11 @@ open Shared
 
 // test data
 
-let r1Reg = { defaultRegistration with classType = typeof<R1>; interfaceTypes = [typeof<IR1>] }
-let r2Reg = { defaultRegistration with classType = typeof<R2>; interfaceTypes = [typeof<R2_Base>; typeof<IR2_1>; typeof<IR2_2>] }
-let c1aReg = { defaultRegistration with classType = typeof<C1A_R1>; interfaceTypes = [typeof<IC1A_R1>] }
-let multiImpl1Reg = { defaultRegistration with classType = typeof<MultiImpl1>; interfaceTypes = [typeof<IMultiImpls>] }
-let multiImpl2Reg = { defaultRegistration with classType = typeof<MultiImpl2>; interfaceTypes = [typeof<IMultiImpls>] }
+let r1Reg = { defaultRegistration with classType = typeof<R1>; interfaceTypes = Some [typeof<IR1>] }
+let r2Reg = { defaultRegistration with classType = typeof<R2>; interfaceTypes = Some [typeof<R2_Base>; typeof<IR2_1>; typeof<IR2_2>] }
+let c1aReg = { defaultRegistration with classType = typeof<C1A_R1>; interfaceTypes = Some [typeof<IC1A_R1>] }
+let multiImpl1Reg = { defaultRegistration with classType = typeof<MultiImpl1>; interfaceTypes = Some [typeof<IMultiImpls>] }
+let multiImpl2Reg = { defaultRegistration with classType = typeof<MultiImpl2>; interfaceTypes = Some [typeof<IMultiImpls>] }
 
 // buildTypesSet
 
@@ -74,6 +74,6 @@ let buildTypeToRegMapErrorCases =
 [<InlineData(1)>]
 [<InlineData(2)>]
 let ``buildTypeToRegMap: multiple impls -> error`` case =
-    let regs = buildTypeToRegMapErrorCases.[case] |> List.map (fun (clas, inters) -> { defaultRegistration with classType = clas; interfaceTypes = inters })
+    let regs = buildTypeToRegMapErrorCases.[case] |> List.map (fun (clas, inters) -> { defaultRegistration with classType = clas; interfaceTypes = Some inters })
 
     (fun () -> buildTypeToRegMap regs) |> assertInvalidOp
