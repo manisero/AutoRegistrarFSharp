@@ -14,8 +14,8 @@ open ImplementationMap
 let getClassInterfacesCases =
     [
         (typeof<NoInters>, [||]);
-        (typeof<R1>, [|typeof<R1>|]);
-        (typeof<R2>, [|typeof<R2_Base>; typeof<IR2_1>; typeof<IR2_2>|])
+        (typeof<R1>, [|typeof<IR1>|]);
+        (typeof<R2>, [|typeof<R2_Base>; typeof<IR2_Base>; typeof<IR2_1>; typeof<IR2_2>|])
     ]
 
 [<Theory>]

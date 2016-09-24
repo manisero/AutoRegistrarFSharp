@@ -1,7 +1,11 @@
 ﻿module ImplementationMap
 
-let getClassInterfaces typ =
-    []
+open System
+
+let getClassInterfaces (typ:Type) =
+    if (typ.BaseType = typeof<Object>)
+    then Array.toList (typ.GetInterfaces())
+    else typ.BaseType :: Array.toList (typ.GetInterfaces())
 
 let handleInterType handledTypes typeToRegMap reg inter = null
 
@@ -10,6 +14,7 @@ let buildImplementationMap buildTypesSet buildTypeToRegMap getClassInterfaces ha
     // each reg can contain lifetime, but should not contain interfaceTypes
     
     // for each reg:
+    // - if classType is interface or is abstract, error
     // - it's interfaces are interfaces it implements and base class it derives
     //   - TODO: consider walking through full type hierarchy
     // if multiple classes implement given interface, then this interface should not appear in any of those classes' interfaceTypes
