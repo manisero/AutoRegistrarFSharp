@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestClasses", "TestClasses"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manisero.AutoRegistrar.TestClasses", "Manisero.AutoRegistrar.TestClasses\Manisero.AutoRegistrar.TestClasses.csproj", "{58520359-2697-486E-B488-542BD45E3836}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manisero.AutoRegistrar.TestClasses2", "Manisero.AutoRegistrar.TestClasses2\Manisero.AutoRegistrar.TestClasses2.csproj", "{262D6F2F-461E-4ABC-A00B-D8ED6AA7B3B6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,11 +31,16 @@ Global
 		{58520359-2697-486E-B488-542BD45E3836}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58520359-2697-486E-B488-542BD45E3836}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58520359-2697-486E-B488-542BD45E3836}.Release|Any CPU.Build.0 = Release|Any CPU
+		{262D6F2F-461E-4ABC-A00B-D8ED6AA7B3B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{262D6F2F-461E-4ABC-A00B-D8ED6AA7B3B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{262D6F2F-461E-4ABC-A00B-D8ED6AA7B3B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{262D6F2F-461E-4ABC-A00B-D8ED6AA7B3B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{58520359-2697-486E-B488-542BD45E3836} = {A94153A5-10E4-419E-BC69-0A7FCC0B8C6F}
+		{262D6F2F-461E-4ABC-A00B-D8ED6AA7B3B6} = {A94153A5-10E4-419E-BC69-0A7FCC0B8C6F}
 	EndGlobalSection
 EndGlobal

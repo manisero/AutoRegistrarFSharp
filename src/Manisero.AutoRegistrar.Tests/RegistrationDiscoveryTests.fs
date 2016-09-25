@@ -6,6 +6,7 @@ open FsUnit.Xunit
 open Domain
 open TestsHelpers
 open Manisero.AutoRegistrar.TestClasses
+open Manisero.AutoRegistrar.TestClasses2
 open RegistrationDiscovery
 
 // test data
@@ -76,4 +77,11 @@ let ``some initRegs, some filter -> filter not applied to init types``() =
     types |> assertContains [typeof<R1>; typeof<R2>]
     types |> should not' (contain typeof<NoInters>)
 
-// multiple assemblies -> types from all assemblies
+[<Fact>]
+let ``multiple assemblies -> types from all assemblies`` () =
+    let assemblies = [typeof<TestClass>.Assembly; testAss]
+
+    let res = DiscoverRegistrations [] None assemblies
+
+    let types = res |> List.map (fun x -> x.classType)
+    types |> assertContains [typeof<TestClass>; typeof<R1>; typeof<R2>]
