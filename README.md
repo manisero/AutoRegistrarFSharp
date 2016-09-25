@@ -9,13 +9,13 @@ Automatic DI Container registrations resolver.
 - initialMap contains predefined registrations
 - single registration contains:
   - class
-  - its lifetime
+  - its lifetime (optional)
   - implemented interface(s) (optional)
 - Registration record contains mutable fields in order to avoid:
   - memory pressure (copying Registration record to preserve immutability)
   - splitting Registration record into set of [class -> field] hashmaps
     - this would avoid copying records, but imply keeping Registartion state in 4-5 hashmaps
-- [nice to have] some registrations may only indicate class's lifetime without specifying implemented interface(s)
+- some registrations may only indicate class's lifetime without specifying implemented interface(s)
 
 ----------
 
