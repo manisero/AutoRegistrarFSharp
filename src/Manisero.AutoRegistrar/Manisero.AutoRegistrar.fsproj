@@ -54,7 +54,6 @@
     <Compile Include="DependancyLevels.fs" />
     <Compile Include="Lifetimes.fs" />
     <Compile Include="AutoRegistrar.fs" />
-    <None Include="Script.fsx" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
