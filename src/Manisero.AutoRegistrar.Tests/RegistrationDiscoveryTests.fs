@@ -10,8 +10,6 @@ open RegistrationDiscovery
 
 // test data
 
-let testAss = typeof<R1>.Assembly
-
 let intInters = None
 let intLifetime = None
 let intReg = { defaultRegistration with classType = typeof<int>; interfaceTypes = intInters; lifetime = intLifetime }
@@ -22,7 +20,9 @@ let r2Inters = Some [typeof<IR2_1>; typeof<IR2_2>]
 let r2Lifetime = Some 3
 let r2Reg = { defaultRegistration with classType = typeof<R2>; interfaceTypes = r2Inters; lifetime = r2Lifetime }
 
+let testAss = typeof<R1>.Assembly
 let initRegs = [intReg; r1Reg; r2Reg]
+let filter (typ:Type) = typ.FullName.Contains("1")
 
 // DiscoverRegistrations
 
@@ -61,9 +61,7 @@ let ``some initRegs -> interfaceTypes and lifetimes not overriden``() =
 
 [<Fact>]
 let ``some filter -> types filtered``() =
-    let filter (typ:Type) = typ.FullName.Contains("1")
-
-    let res = DiscoverRegistrations [] filter [testAss]
+    let res = DiscoverRegistrations [] (Some filter) [testAss]
     
     let types = res |> List.map (fun x -> x.classType)
     types |> should contain typeof<R1>
@@ -72,9 +70,7 @@ let ``some filter -> types filtered``() =
 
 [<Fact>]
 let ``some initRegs, some filter -> filter not applied to init types``() =
-    let filter (typ:Type) = typ.FullName.Contains("1")
-
-    let res = DiscoverRegistrations initRegs filter [testAss]
+    let res = DiscoverRegistrations initRegs (Some filter) [testAss]
     
     let types = res |> List.map (fun x -> x.classType)
     types |> assertContains [typeof<R1>; typeof<R2>]

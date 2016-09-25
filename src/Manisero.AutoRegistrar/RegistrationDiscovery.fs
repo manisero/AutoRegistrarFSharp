@@ -5,8 +5,10 @@ open System.Collections.Generic
 open System.Reflection
 open Domain
 
-let buildTypFilter (initTypes:ISet<Type>) =
-    (fun (x:Type) -> (not x.IsAbstract) && (not (initTypes.Contains x)))
+let buildTypFilter (initTypes:ISet<Type>) customFilter =
+    match customFilter with
+    | Some f -> fun (x:Type) -> (not x.IsAbstract) && (not (initTypes.Contains x)) && f x
+    | _ -> fun (x:Type) -> (not x.IsAbstract) && (not (initTypes.Contains x))
 
 let getRegsFromAss filter ass =
     let getTypes filter (ass:Assembly) = ass.ExportedTypes |> Seq.filter filter
@@ -16,7 +18,7 @@ let getRegsFromAss filter ass =
 
 let DiscoverRegistrations initRegs filter (assemblies:Assembly list) =
     let initTypes = new HashSet<Type>(initRegs |> Seq.map (fun x -> x.classType))
-    let filter = buildTypFilter initTypes
+    let filter = buildTypFilter initTypes filter
 
     let newRegs = assemblies |> List.map (getRegsFromAss filter) |> Seq.concat |> Seq.toList
     initRegs @ newRegs
