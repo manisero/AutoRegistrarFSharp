@@ -47,6 +47,7 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Domain.fs" />
     <Compile Include="Shared.fs" />
+    <Compile Include="AssemblyDiscovery.fs" />
     <Compile Include="RegistrationDiscovery.fs" />
     <Compile Include="ImplementationMap.fs" />
     <Compile Include="DependencyGraph.fs" />

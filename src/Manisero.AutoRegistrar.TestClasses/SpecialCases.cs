@@ -1,5 +1,12 @@
-﻿namespace Manisero.AutoRegistrar.TestClasses
+﻿using System;
+
+namespace Manisero.AutoRegistrar.TestClasses
 {
+    public static class ReferencedByTestClassesOnly
+    {
+        public static readonly Type TypeReferencedByTestClassesOnly = typeof(AutoRegistrar.ReferencedByTestClassesOnly.ReferencedByTestClassesOnly);
+    }
+
     public class NoInters { }
 
     public interface IMultiImpls { }
