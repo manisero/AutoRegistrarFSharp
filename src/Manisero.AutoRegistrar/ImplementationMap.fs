@@ -1,6 +1,7 @@
 ﻿module ImplementationMap
 
 open System
+open System.Collections.Generic
 open Domain
 open Shared
 
@@ -18,7 +19,15 @@ let getClassInterfaces (typ:Type) =
     then Array.toList (typ.GetInterfaces())
     else baseType :: Array.toList (typ.GetInterfaces()) // TODO: Consider walking through full type hierarchy
 
-let handleInterType handledTypes typeToRegMap reg inter = ignore null
+let handleInterType handledTypes (typeToRegMap:IDictionary<Type, Registration>) reg inter =
+    reg.interfaceTypes <-
+        match reg.interfaceTypes with
+        | Some i -> Some (inter :: reg.interfaceTypes.Value)
+        | None -> Some [inter]
+
+    typeToRegMap.Add(inter, reg)
+
+        
     // - if interface is present in handledTypes, continue
     // - else if interface is present in typeToRegMap.keys
     //   - remove it from its registration interfaceTypes
