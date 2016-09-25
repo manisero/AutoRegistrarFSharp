@@ -12,9 +12,11 @@ let validateReg reg =
     else ignore null
 
 let getClassInterfaces (typ:Type) =
-    if (typ.BaseType = typeof<Object>)
+    let baseType = typ.BaseType
+
+    if (baseType = null || baseType = typeof<Object>)
     then Array.toList (typ.GetInterfaces())
-    else typ.BaseType :: Array.toList (typ.GetInterfaces()) // TODO: consider walking through full type hierarchy
+    else baseType :: Array.toList (typ.GetInterfaces()) // TODO: Consider walking through full type hierarchy
 
 let handleInterType handledTypes typeToRegMap reg inter = ignore null
     // - if interface is present in handledTypes, continue

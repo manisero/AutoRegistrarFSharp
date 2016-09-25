@@ -1,5 +1,6 @@
 ﻿module ImplementationMapTests
 
+open System
 open System.Linq
 open Xunit
 open FsUnit.Xunit
@@ -13,6 +14,7 @@ open ImplementationMap
 
 let getClassInterfacesCases =
     [
+        (typeof<Object>, [||]);
         (typeof<NoInters>, [||]);
         (typeof<R1>, [|typeof<IR1>|]);
         (typeof<R2>, [|typeof<R2_Base>; typeof<IR2_Base>; typeof<IR2_1>; typeof<IR2_2>|])
@@ -22,6 +24,7 @@ let getClassInterfacesCases =
 [<InlineData(0)>]
 [<InlineData(1)>]
 [<InlineData(2)>]
+[<InlineData(3)>]
 let ``getClassInterfaces: class -> immediate base class and implemented interfaces`` case =
     let (typ, expInter) = getClassInterfacesCases.[case]
 
