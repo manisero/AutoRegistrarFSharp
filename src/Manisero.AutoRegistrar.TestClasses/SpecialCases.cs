@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Reflection;
 
 namespace Manisero.AutoRegistrar.TestClasses
 {
     public static class ReferencedByTestClassesOnly
     {
-        public static readonly Type TypeReferencedByTestClassesOnly = typeof(AutoRegistrar.ReferencedByTestClassesOnly.ReferencedByTestClassesOnly);
+        public static readonly Type Type = typeof(AutoRegistrar.ReferencedByTestClassesOnly.ReferencedByTestClassesOnly);
+        public static readonly Assembly Assembly = Type.Assembly;
     }
 
     public class NoInters { }

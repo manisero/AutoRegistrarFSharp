@@ -3,12 +3,18 @@
 open System
 open Xunit
 open FsUnit.Xunit
+open TestsHelpers
 open Manisero.AutoRegistrar.TestClasses
-open Manisero.AutoRegistrar.TestClasses2
 open AssemblyDiscovery
 
 // DiscoverAssemblies
 
 [<Fact>]
 let ``TestClasses -> TestClasses and ReferencedByTestClassesOnly``() =
-    null
+    let root = typeof<R1>.Assembly
+
+    let res = DiscoverAssemblies root None
+    
+    res |> assertContains [root; ReferencedByTestClassesOnly.Assembly]
+
+// filtering
