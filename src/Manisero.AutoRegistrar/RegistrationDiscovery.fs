@@ -1,4 +1,4 @@
 ﻿module RegistrationDiscovery
 
-let DiscoverRegistrations initRegs assemblies =
+let DiscoverRegistrations initRegs filter assemblies =
     ()
