@@ -8,8 +8,6 @@ open Shared
 let validateReg reg =
     if (reg.classType.IsAbstract)
     then invalidOp (sprintf "'%s' cannot be set as Registration.classType as it is abstract." reg.classType.FullName)
-    elif (reg.interfaceTypes.IsSome)
-    then invalidOp (sprintf "'%s' type's Registration's interfaceTypes is not None. Registration.interfaceTypes must be None." reg.classType.FullName)
     else ignore null
 
 let getClassInterfaces (typ:Type) =
@@ -21,7 +19,7 @@ let getClassInterfaces (typ:Type) =
 
 let handleInterType (handledTypes:ISet<Type>) (typeToRegMap:IDictionary<Type, Registration>) reg inter =
     let handleConflict existingReg =
-        existingReg.interfaceTypes <- existingReg.interfaceTypes.Value |> List.filter (fun x -> x <> inter) |> Some
+        existingReg.interfaceTypes <- (defaultArg existingReg.interfaceTypes []) |> List.filter (fun x -> x <> inter) |> Some
         ignore (typeToRegMap.Remove inter)
         ignore (handledTypes.Add inter)
 
@@ -39,7 +37,11 @@ let handleInterType (handledTypes:ISet<Type>) (typeToRegMap:IDictionary<Type, Re
         else handleNew()
 
 let BuildImplementationMap regs =
-    let handleInters handledTypes typeToRegMap reg = reg.classType |> getClassInterfaces |> List.iter (handleInterType handledTypes typeToRegMap reg)
+    let handleInters handledTypes typeToRegMap reg =
+        reg.classType |> getClassInterfaces |> List.iter (handleInterType handledTypes typeToRegMap reg)
+
+        if (reg.interfaceTypes.IsNone)
+        then reg.interfaceTypes <- Some []
 
     regs |> List.iter validateReg
 

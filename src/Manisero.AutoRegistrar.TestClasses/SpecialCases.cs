@@ -6,6 +6,14 @@
     public class MultiImpl1 : IMultiImpls { }
     public class MultiImpl2 : IMultiImpls { }
 
+    public interface IMultiImpls2_1 { }
+    public interface IMultiImpls2_2 { }
+    public interface IMultiImpls2_3 { }
+    public interface IMultiImpl2_1 { }
+    public class MultiImpl2_1 : IMultiImpl2_1, IMultiImpls2_1, IMultiImpls2_2, IMultiImpls2_3 { }
+    public interface IMultiImpl2_2 { }
+    public class MultiImpl2_2 : IMultiImpl2_2, IMultiImpls2_1, IMultiImpls2_2, IMultiImpls2_3 { }
+
     public class MultiCtors
     {
         public MultiCtors() {}

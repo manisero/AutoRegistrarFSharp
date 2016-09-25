@@ -67,16 +67,6 @@ let ``findReg: no matching reg -> error`` case =
     (fun () -> findReg map typeof<IR2_1>) |> assertInvalidOp
 
 // BuildDependencyGraph
-
-let getRegCopies() =
-    [
-        { r1Reg with classType = r1Reg.classType };
-        { r2Reg with classType = r2Reg.classType };
-        { c1aReg with classType = c1aReg.classType };
-        { c1bReg with classType = c1bReg.classType };
-        { c1cReg with classType = c1cReg.classType }
-    ]
-
 let buildDependencyGraphCases =
     [
         (r1Reg.classType, []);
@@ -93,8 +83,15 @@ let buildDependencyGraphCases =
 [<InlineData(3)>]
 [<InlineData(4)>]
 let ``BuildDependencyGraph: -> deps filled`` case =
+    let regs =
+        [
+            { r1Reg with classType = r1Reg.classType };
+            { r2Reg with classType = r2Reg.classType };
+            { c1aReg with classType = c1aReg.classType };
+            { c1bReg with classType = c1bReg.classType };
+            { c1cReg with classType = c1cReg.classType }
+        ]
     let (regClass, expDeps) = buildDependencyGraphCases.[case]
-    let regs = getRegCopies()
 
     BuildDependencyGraph regs
 

@@ -13,7 +13,7 @@
     public interface IR2_2 { }
     public class R2 : R2_Base, IR2_1, IR2_2 {}
 
-    public class IC1A_R1 {}
+    public interface IC1A_R1 {}
     public class C1A_R1 : IC1A_R1
     {
         public C1A_R1(R1 p1) {}

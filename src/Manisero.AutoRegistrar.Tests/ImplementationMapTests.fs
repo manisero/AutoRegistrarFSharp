@@ -2,7 +2,6 @@
 
 open System
 open System.Collections.Generic
-open System.Linq
 open Xunit
 open FsUnit.Xunit
 open Domain
@@ -17,16 +16,20 @@ let r2Reg = { defaultRegistration with classType = typeof<R2>; }
 let c1aReg = { defaultRegistration with classType = typeof<C1A_R1>;}
 let c1bReg = { defaultRegistration with classType = typeof<C1B_R1_R2>; }
 let c1cReg = { defaultRegistration with classType = typeof<C1C_R1_R1>; }
+let noIntersReg = { defaultRegistration with classType = typeof<NoInters>; }
 let multiImpl1Reg = { defaultRegistration with classType = typeof<MultiImpl1>; }
+let multiImpl2Reg = { defaultRegistration with classType = typeof<MultiImpl2>; }
+let multiImpl2_1Reg = { defaultRegistration with classType = typeof<MultiImpl2_1>; }
+let multiImpl2_2Reg = { defaultRegistration with classType = typeof<MultiImpl2_2>; }
 
 // getClassInterfaces
 
 let getClassInterfacesCases =
     [
-        (typeof<Object>, [||]);
-        (typeof<NoInters>, [||]);
-        (typeof<R1>, [|typeof<IR1>|]);
-        (typeof<R2>, [|typeof<R2_Base>; typeof<IR2_Base>; typeof<IR2_1>; typeof<IR2_2>|])
+        (typeof<Object>, []);
+        (typeof<NoInters>, []);
+        (typeof<R1>, [typeof<IR1>]);
+        (typeof<R2>, [typeof<R2_Base>; typeof<IR2_Base>; typeof<IR2_1>; typeof<IR2_2>])
     ]
 
 [<Theory>]
@@ -39,7 +42,7 @@ let ``getClassInterfaces: class -> immediate base class and implemented interfac
 
     let res = getClassInterfaces typ
 
-    res.ToArray() |> should equal expInter
+    res |> should equal expInter
 
 // handleInterType
 
@@ -79,22 +82,51 @@ let ``handleInterType: inter in handledTypes -> ignored``() =
     r1Reg.interfaceTypes.Value |> should not' (contain typeof<IR1>)
 
 // BuildImplementationMap
+let BuildImplementationMapCases =
+    [
+        (r1Reg.classType, []);
+        (r2Reg.classType, [typeof<IR2_2>; typeof<IR2_1>; typeof<IR2_Base>; typeof<R2_Base>]);
+        (c1aReg.classType, [typeof<IC1A_R1>]);
+        (noIntersReg.classType, []);
+        (multiImpl1Reg.classType, []);
+        (multiImpl2Reg.classType, []);
+        (multiImpl2_1Reg.classType, [typeof<IMultiImpls2_1>]);
+        (multiImpl2_2Reg.classType, [typeof<IMultiImpls2_2>])
+    ]
 
-[<Fact>]
-let ``BuildImplementationMap: success scenario``() =
-    failwith "TODO"
-    ignore null
+[<Theory>]
+[<InlineData(0)>]
+[<InlineData(1)>]
+[<InlineData(2)>]
+[<InlineData(3)>]
+[<InlineData(4)>]
+[<InlineData(5)>]
+[<InlineData(6)>]
+[<InlineData(7)>]
+let ``BuildImplementationMap: success scenario`` case =
+    let regs =
+        [
+            { r1Reg with interfaceTypes = Some [] };
+            { r2Reg with classType = r2Reg.classType };
+            { c1aReg with classType = c1aReg.classType };
+            { noIntersReg with classType = noIntersReg.classType };
+            { multiImpl1Reg with classType = multiImpl1Reg.classType };
+            { multiImpl2Reg with classType = multiImpl2Reg.classType };
+            { multiImpl2_1Reg with interfaceTypes = Some [typeof<IMultiImpls2_1>] };
+            { multiImpl2_2Reg with interfaceTypes = Some [typeof<IMultiImpls2_2>] }
+        ]
+    let (regClass, expInters) = BuildImplementationMapCases.[case]
+
+    BuildImplementationMap regs
+
+    let resInters = regs |> List.find (fun x -> x.classType = regClass) |> (fun x -> x.interfaceTypes)
+    resInters |> should not' (be Null)
+    resInters.Value |> should equal expInters
 
 [<Theory>]
 [<InlineData(typeof<IR2_1>)>]
 [<InlineData(typeof<R2_Base>)>]
 let ``BuildImplementationMap: reg classType is abstract or interface -> error`` classType =
     let reg = { defaultRegistration with classType = classType }
-    
-    (fun () -> BuildImplementationMap [reg]) |> assertInvalidOp
-
-[<Fact>]
-let ``BuildImplementationMap: reg interfaceType is not None -> error``() =
-    let reg = { r1Reg with interfaceTypes = Some [] }
     
     (fun () -> BuildImplementationMap [reg]) |> assertInvalidOp
