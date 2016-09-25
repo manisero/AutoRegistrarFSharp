@@ -85,12 +85,16 @@ let ``BuildImplementationMap: success scenario``() =
     failwith "TODO"
     ignore null
 
-[<Fact>]
-let ``BuildImplementationMap: reg classType is abstract or interface -> error``() =
-    failwith "TODO"
-    ignore null
+[<Theory>]
+[<InlineData(typeof<IR2_1>)>]
+[<InlineData(typeof<R2_Base>)>]
+let ``BuildImplementationMap: reg classType is abstract or interface -> error`` classType =
+    let reg = { defaultRegistration with classType = classType }
+    
+    (fun () -> BuildImplementationMap [reg]) |> assertInvalidOp
 
 [<Fact>]
 let ``BuildImplementationMap: reg interfaceType is not None -> error``() =
-    failwith "TODO"
-    ignore null
+    let reg = { r1Reg with interfaceTypes = Some [] }
+    
+    (fun () -> BuildImplementationMap [reg]) |> assertInvalidOp
