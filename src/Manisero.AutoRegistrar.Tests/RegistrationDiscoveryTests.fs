@@ -27,7 +27,7 @@ let initRegs = [intReg; r1Reg; r2Reg]
 // DiscoverRegistrations
 
 [<Fact>]
-let ``no initRegs, no filter, TestClasses assembly -> concrete classes from TestClasses`` () =
+let ``no initRegs, no filter, single assembly -> concrete classes from assembly`` () =
     let res = DiscoverRegistrations [] None [testAss]
 
     let types = res |> List.map (fun x -> x.classType)
@@ -58,7 +58,26 @@ let ``some initRegs -> interfaceTypes and lifetimes not overriden``() =
     res |> assertIntersAndLife intReg.classType intInters intLifetime
     res |> assertIntersAndLife r1Reg.classType r1Inters r1Lifetime
     res |> assertIntersAndLife r2Reg.classType r2Inters r2Lifetime
+
+[<Fact>]
+let ``some filter -> types filtered``() =
+    let filter (typ:Type) = typ.FullName.Contains("1")
+
+    let res = DiscoverRegistrations [] filter [testAss]
     
-// no initRegs, filter -> filtered
-// initRegs, filter -> filter not applied to initRegs
+    let types = res |> List.map (fun x -> x.classType)
+    types |> should contain typeof<R1>
+    types |> should not' (contain typeof<R2>)
+    types |> should not' (contain typeof<NoInters>)
+
+[<Fact>]
+let ``some initRegs, some filter -> filter not applied to init types``() =
+    let filter (typ:Type) = typ.FullName.Contains("1")
+
+    let res = DiscoverRegistrations initRegs filter [testAss]
+    
+    let types = res |> List.map (fun x -> x.classType)
+    types |> assertContains [typeof<R1>; typeof<R2>]
+    types |> should not' (contain typeof<NoInters>)
+
 // multiple assemblies -> types from all assemblies
