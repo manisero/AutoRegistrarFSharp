@@ -20,27 +20,23 @@ let getClassInterfaces (typ:Type) =
     else baseType :: Array.toList (typ.GetInterfaces()) // TODO: Consider walking through full type hierarchy
 
 let handleInterType (handledTypes:ISet<Type>) (typeToRegMap:IDictionary<Type, Registration>) reg inter =
+    let handleConflict existingReg =
+        existingReg.interfaceTypes <- existingReg.interfaceTypes.Value |> List.filter (fun x -> x <> inter) |> Some
+        ignore (typeToRegMap.Remove inter)
+        ignore (handledTypes.Add inter)
+
+    let handleNew() =
+        reg.interfaceTypes <- inter :: (defaultArg reg.interfaceTypes []) |> Some
+        typeToRegMap.Add(inter, reg)
+
     if (handledTypes.Contains(inter))
     then ignore null
     else
         let mutable existingReg = defaultRegistration
 
         if (typeToRegMap.TryGetValue(inter, &existingReg))
-        then
-            existingReg.interfaceTypes <-
-                match existingReg.interfaceTypes with
-                | Some i -> i |> List.filter (fun x -> x <> inter) |> Some
-                | None -> None
-
-            ignore (typeToRegMap.Remove inter)
-            ignore (handledTypes.Add inter)
-        else
-            reg.interfaceTypes <-
-                match reg.interfaceTypes with
-                | Some i -> Some (inter :: i)
-                | None -> Some [inter]
-
-            typeToRegMap.Add(inter, reg)
+        then handleConflict existingReg
+        else handleNew()
 
 let BuildImplementationMap regs =
     let handleInters handledTypes typeToRegMap reg = reg.classType |> getClassInterfaces |> List.iter (handleInterType handledTypes typeToRegMap reg)
