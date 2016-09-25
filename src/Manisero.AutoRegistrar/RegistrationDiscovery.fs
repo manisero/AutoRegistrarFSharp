@@ -1,10 +1,22 @@
 ﻿module RegistrationDiscovery
 
+open System
+open System.Collections.Generic
 open System.Reflection
 open Domain
 
-let DiscoverRegistrations initRegs filter (assemblies:Assembly list) =
-    let getTypes (ass:Assembly) = ass.ExportedTypes |> Seq.filter (fun x -> not x.IsAbstract)
+let buildTypFilter (initTypes:ISet<Type>) =
+    (fun (x:Type) -> (not x.IsAbstract) && (not (initTypes.Contains x)))
+
+let getRegsFromAss filter ass =
+    let getTypes filter (ass:Assembly) = ass.ExportedTypes |> Seq.filter filter
     let toReg typ = { defaultRegistration with classType = typ }
 
-    assemblies |> List.map (fun x -> x |> getTypes |> Seq.map toReg ) |> Seq.concat |> List.ofSeq
+    ass |> getTypes filter |> Seq.map toReg
+
+let DiscoverRegistrations initRegs filter (assemblies:Assembly list) =
+    let initTypes = new HashSet<Type>(initRegs |> Seq.map (fun x -> x.classType))
+    let filter = buildTypFilter initTypes
+
+    let newRegs = assemblies |> List.map (getRegsFromAss filter) |> Seq.concat |> Seq.toList
+    initRegs @ newRegs
