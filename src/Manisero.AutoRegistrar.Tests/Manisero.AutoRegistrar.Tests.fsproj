@@ -63,7 +63,6 @@
     <Compile Include="DependencyGraphTests.fs" />
     <Compile Include="DependancyLevelsTests.fs" />
     <Compile Include="LifetimesTests.fs" />
-    <None Include="Script.fsx" />
     <Content Include="packages.config" />
     <Content Include="App.config" />
   </ItemGroup>
