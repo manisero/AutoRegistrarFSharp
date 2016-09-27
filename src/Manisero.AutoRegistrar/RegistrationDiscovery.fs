@@ -16,9 +16,9 @@ let getRegsFromAss filter ass =
 
     ass |> getTypes filter |> Seq.map toReg
 
-let DiscoverRegistrations initRegs filter (assemblies:Assembly list) =
+let DiscoverRegistrations initRegs typeFilter (assemblies:Assembly list) =
     let initTypes = new HashSet<Type>(initRegs |> Seq.map (fun x -> x.classType))
-    let filter = buildTypFilter initTypes filter
+    let filter = buildTypFilter initTypes typeFilter
 
     let newRegs = assemblies |> List.map (getRegsFromAss filter) |> Seq.concat |> Seq.toList
     initRegs @ newRegs

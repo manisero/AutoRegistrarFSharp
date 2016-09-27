@@ -30,10 +30,10 @@ let rec addAssTree filter visited asses assName =
     | Some ass -> ass.GetReferencedAssemblies() |> Seq.iter (addAssTree filter visited asses)
     | None -> ignore null
 
-let DiscoverAssemblies (rootAssembly:Assembly) filter =
+let DiscoverAssemblies assemblyFilter (rootAssembly:Assembly) =
     let visited = new HashSet<AssemblyName>(getAssNameComparer())
     let asses = new List<Assembly>()
     
-    addAssTree filter visited asses (rootAssembly.GetName())
+    addAssTree assemblyFilter visited asses (rootAssembly.GetName())
 
     asses |> Seq.toList

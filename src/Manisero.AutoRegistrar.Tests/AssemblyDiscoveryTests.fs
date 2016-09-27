@@ -15,13 +15,13 @@ let mscorlibAss = typeof<string>.Assembly
 
 [<Fact>]
 let ``DiscoverAssemblies: -> root ass and referenced asses``() =
-    let res = DiscoverAssemblies root None
+    let res = DiscoverAssemblies None root
     
     res |> assertContains [root; assRefByTestClasses; mscorlibAss]
 
 [<Fact>]
 let ``DiscoverAssemblies: -> no duplicates``() =
-    let res = DiscoverAssemblies root None
+    let res = DiscoverAssemblies None root
     
     res |> Seq.distinct |> Seq.length |> should equal res.Length
 
@@ -37,7 +37,7 @@ let discoverAssembliesFilterCases =
 let ``DiscoverAssemblies: filter -> filtered`` case =
     let (filter, rejectedAsses, acceptedAsses) = discoverAssembliesFilterCases.[case]
 
-    let res = DiscoverAssemblies root (Some filter)
+    let res = DiscoverAssemblies (Some filter) root
     
     res |> assertNotContains rejectedAsses
     res |> assertContains acceptedAsses
