@@ -27,6 +27,6 @@ let AssignDependancyLevels regs =
     if (regs |> List.exists hasNoLevel)
     then
         let failedTypes = regs |> List.filter hasNoLevel |> List.map (fun x -> sprintf "'%s'" x.classType.FullName) |> String.concat ", "
-        invalidOp (sprintf "Cannot assign dependancy level for the following types: %s." failedTypes)
+        invalidOp (sprintf "Cannot assign dependancy level for the following types: %s. Possible cyclic dependency." failedTypes)
 
     regs
