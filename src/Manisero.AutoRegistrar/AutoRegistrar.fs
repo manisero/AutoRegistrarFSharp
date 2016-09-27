@@ -7,9 +7,9 @@ open DependencyGraph
 open DependancyLevels
 open Lifetimes
 
-let FromImplementationMap = BuildDependencyGraph >> AssignDependancyLevels >>ResolveLifetimes
+let FromImplementationMap regs = regs |> BuildDependencyGraph |> AssignDependancyLevels |> ResolveLifetimes
 
-let FromRegistrations = BuildImplementationMap >> FromImplementationMap
+let FromRegistrations regs = regs |> BuildImplementationMap |> FromImplementationMap
 
 let FromAssemblies initRegs typeFilter assemblies = assemblies |> DiscoverRegistrations initRegs typeFilter |> FromRegistrations
 
