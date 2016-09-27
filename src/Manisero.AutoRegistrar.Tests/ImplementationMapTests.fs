@@ -1,4 +1,4 @@
-﻿module ImplementationMapTests
+﻿module Manisero.AutoRegistrar.ImplementationMapTests
 
 open System
 open System.Collections.Generic

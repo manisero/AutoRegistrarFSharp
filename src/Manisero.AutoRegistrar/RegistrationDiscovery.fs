@@ -1,4 +1,4 @@
-﻿module RegistrationDiscovery
+﻿module Manisero.AutoRegistrar.RegistrationDiscovery
 
 open System
 open System.Collections.Generic

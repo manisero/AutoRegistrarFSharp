@@ -1,4 +1,4 @@
-﻿module Lifetimes
+﻿module Manisero.AutoRegistrar.Lifetimes
 
 open Domain
 

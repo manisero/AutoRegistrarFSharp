@@ -1,4 +1,4 @@
-﻿module TestsHelpers
+﻿module Manisero.AutoRegistrar.TestsHelpers
 
 open System
 open FsUnit.Xunit

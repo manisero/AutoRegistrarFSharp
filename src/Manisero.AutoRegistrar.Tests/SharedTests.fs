@@ -1,4 +1,4 @@
-﻿module SharedTests
+﻿module Manisero.AutoRegistrar.SharedTests
 
 open System.Linq
 open Xunit

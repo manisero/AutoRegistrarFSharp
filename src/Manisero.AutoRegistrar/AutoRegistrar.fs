@@ -1,4 +1,4 @@
-﻿module AutoRegistrar
+﻿module Manisero.AutoRegistrar.AutoRegistrar
 
 open AssemblyDiscovery
 open RegistrationDiscovery

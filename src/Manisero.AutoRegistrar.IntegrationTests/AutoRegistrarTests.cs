@@ -7,7 +7,6 @@ namespace Manisero.AutoRegistrar.IntegrationTests
         [Fact]
         public void test()
         {
-            
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿module DependancyLevelsTests
+﻿module Manisero.AutoRegistrar.DependancyLevelsTests
 
 open Xunit
 open FsUnit.Xunit

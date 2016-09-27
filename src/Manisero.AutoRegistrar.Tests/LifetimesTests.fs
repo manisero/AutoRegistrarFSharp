@@ -1,4 +1,4 @@
-﻿module LifetimesTests
+﻿module Manisero.AutoRegistrar.LifetimesTests
 
 open Xunit
 open FsUnit.Xunit

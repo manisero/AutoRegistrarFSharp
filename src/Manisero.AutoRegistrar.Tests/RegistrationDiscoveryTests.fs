@@ -1,4 +1,4 @@
-﻿module RegistrationDiscoveryTests
+﻿module Manisero.AutoRegistrar.RegistrationDiscoveryTests
 
 open System
 open Xunit

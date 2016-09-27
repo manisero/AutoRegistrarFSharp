@@ -1,4 +1,4 @@
-﻿module AssemblyDiscoveryTests
+﻿module Manisero.AutoRegistrar.AssemblyDiscoveryTests
 
 open System.Reflection
 open Xunit

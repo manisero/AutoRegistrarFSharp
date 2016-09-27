@@ -1,4 +1,4 @@
-﻿module Domain
+﻿module Manisero.AutoRegistrar.Domain
 
 open System
 

@@ -1,4 +1,4 @@
-﻿module DependencyGraphTests
+﻿module Manisero.AutoRegistrar.DependencyGraphTests
 
 open System
 open Xunit
