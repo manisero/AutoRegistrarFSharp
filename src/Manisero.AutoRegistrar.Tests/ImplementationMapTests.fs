@@ -117,8 +117,9 @@ let ``BuildImplementationMap: success scenario`` case =
         ]
     let (regClass, expInters) = BuildImplementationMapCases.[case]
 
-    BuildImplementationMap regs
+    let res = BuildImplementationMap regs
 
+    res |> should equal regs
     let resInters = regs |> List.find (fun x -> x.classType = regClass) |> (fun x -> x.interfaceTypes)
     resInters |> should not' (be Null)
     resInters.Value |> should equal expInters

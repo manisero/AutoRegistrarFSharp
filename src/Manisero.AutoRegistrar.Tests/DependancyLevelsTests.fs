@@ -93,8 +93,9 @@ let ``AssignDependancyLevels: -> dependancyLevel set`` case =
 
     let regs = List.rev [ c2aReg; c1cReg; r2Reg; c1aReg; r1Reg; c1bReg; ] // Random order to force more than one iteration over regs
 
-    AssignDependancyLevels regs
+    let res = AssignDependancyLevels regs
 
+    res |> should equal regs
     regs |> List.find (fun x -> x.classType = regClass) |> (fun x -> x.dependancyLevel) |> should equal (Some expLvl)
 
 let assignDependancyLevelsErrorCases =

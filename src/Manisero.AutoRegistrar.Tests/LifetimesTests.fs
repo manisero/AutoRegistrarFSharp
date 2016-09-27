@@ -102,8 +102,9 @@ let ``ResolveLifetimes: -> lifetime set`` case =
 
     let regs = List.rev [ c2aReg; c1cRegRes; r2RegRes; c1aReg; r1Reg; c1bReg; ] // Random order to force proper order of lifetime resolution
 
-    ResolveLifetimes regs
+    let res = ResolveLifetimes regs
 
+    res |> should equal regs
     regs |> List.find (fun x -> x.classType = regClass) |> (fun x -> x.lifetime) |> should equal expLifetime
 
 let ResolveLifetimesErrorCases =

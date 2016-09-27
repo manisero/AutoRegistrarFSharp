@@ -5,6 +5,4 @@ open DependancyLevels
 open Lifetimes
 
 let FromImplementationMap regs =
-    regs |> BuildDependencyGraph
-    regs |> AssignDependancyLevels
-    regs |> ResolveLifetimes
+    regs |> BuildDependencyGraph |> AssignDependancyLevels |>ResolveLifetimes

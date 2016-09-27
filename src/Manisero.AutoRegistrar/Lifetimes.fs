@@ -19,3 +19,4 @@ let ResolveLifetimes regs =
 
     regs |> List.iter checkReg
     regs |> List.sortBy (fun x -> x.dependancyLevel.Value) |> List.iter resolveLifetime
+    regs

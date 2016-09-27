@@ -93,6 +93,8 @@ let ``BuildDependencyGraph: -> deps filled`` case =
         ]
     let (regClass, expDeps) = buildDependencyGraphCases.[case]
 
-    BuildDependencyGraph regs
+    let res = BuildDependencyGraph regs
 
+    res |> should equal regs
     regs |> List.find (fun x -> x.classType = regClass) |> (fun x -> x.dependencies) |> should equal expDeps
+    

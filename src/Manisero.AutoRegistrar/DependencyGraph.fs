@@ -25,3 +25,4 @@ let BuildDependencyGraph regs =
     let getDeps reg = reg.classType |> getDepTypes |> List.map (findReg map)
 
     regs |> List.iter (fun x -> x.dependencies <- getDeps x)
+    regs

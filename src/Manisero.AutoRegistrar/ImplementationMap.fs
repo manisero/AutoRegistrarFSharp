@@ -49,3 +49,4 @@ let BuildImplementationMap regs =
     let typeToRegMap = buildTypeToRegMap regs
 
     regs |> List.filter (fun x -> x.interfaceTypes.IsNone) |> List.iter (handleInters handledTypes typeToRegMap)
+    regs
