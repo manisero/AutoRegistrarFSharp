@@ -27,3 +27,11 @@ let FromRootAssemblyCSharp (initRegs:IList<Registration>) rootAssembly (assembly
 
     let regs = rootAssembly |> DiscoverAssemblies (Some assemblyFilterFSharp) |> FromAssemblies initRegsFSharp (Some typeFilterFSharp)
     regs.ToList()
+
+let FromRootAssemblyCSharp2 (shortLivingType:Type) rootAssembly (assemblyFilter:Converter<Assembly, bool>) (typeFilter:System.Converter<Type, bool>) =
+    let initRegsFSharp = [{defaultRegistration with classType = shortLivingType; lifetime = Some 3 }]
+    let assemblyFilterFSharp = FSharpFunc.FromConverter assemblyFilter
+    let typeFilterFSharp = FSharpFunc.FromConverter typeFilter
+
+    let regs = rootAssembly |> DiscoverAssemblies (Some assemblyFilterFSharp) |> FromAssemblies initRegsFSharp (Some typeFilterFSharp)
+    regs.ToList()
