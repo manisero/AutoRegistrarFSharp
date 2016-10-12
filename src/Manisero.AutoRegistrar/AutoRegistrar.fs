@@ -1,8 +1,6 @@
 ﻿module Manisero.AutoRegistrar.AutoRegistrar
 
 open System
-open System.Collections.Generic
-open System.Linq
 open System.Reflection
 open Domain
 open AssemblyDiscovery
@@ -12,26 +10,27 @@ open DependencyGraph
 open DependancyLevels
 open Lifetimes
 
-let FromImplementationMap regs = regs |> BuildDependencyGraph |> AssignDependancyLevels |> ResolveLifetimes
+let FromImplementationMapFs regs = regs |> BuildDependencyGraph |> AssignDependancyLevels |> ResolveLifetimes |> List.toSeq
+let FromImplementationMap regs = FromImplementationMapFs (Seq.toList regs)
 
-let FromRegistrations regs = regs |> BuildImplementationMap |> FromImplementationMap
+let FromRegistrationsFs regs = regs |> BuildImplementationMap |> FromImplementationMapFs
+let FromRegistrations regs = FromRegistrationsFs (Seq.toList regs)
 
-let FromAssemblies initRegs typeFilter assemblies = assemblies |> DiscoverRegistrations initRegs typeFilter |> FromRegistrations
+let FromAssembliesFs initRegs typeFilter assemblies = assemblies |> DiscoverRegistrations initRegs typeFilter |> FromRegistrationsFs
+let FromAssemblies initRegs typeFilter assemblies = FromAssembliesFs (Seq.toList initRegs) typeFilter (Seq.toList assemblies)
 
-let FromRootAssembly initRegs rootAssembly assemblyFilter typeFilter = rootAssembly |> DiscoverAssemblies assemblyFilter |> FromAssemblies initRegs typeFilter
+let FromRootAssemblyFs initRegs rootAssembly assemblyFilter typeFilter = rootAssembly |> DiscoverAssemblies assemblyFilter |> FromAssembliesFs initRegs typeFilter
+let FromRootAssembly initRegs rootAssembly assemblyFilter typeFilter = FromRootAssemblyFs (Seq.toList initRegs) rootAssembly assemblyFilter typeFilter
 
-let FromRootAssemblyCSharp (initRegs:IList<Registration>) rootAssembly (assemblyFilter:Converter<Assembly, bool>) (typeFilter:System.Converter<Type, bool>) =
-    let initRegsFSharp = Seq.toList initRegs
-    let assemblyFilterFSharp = FSharpFunc.FromConverter assemblyFilter
-    let typeFilterFSharp = FSharpFunc.FromConverter typeFilter
+let FromRootAssemblyCSharp initRegs rootAssembly (assemblyFilter:Converter<Assembly, bool>) (typeFilter:System.Converter<Type, bool>) =
+    let assemblyFilterFs = FSharpFunc.FromConverter assemblyFilter
+    let typeFilterFs = FSharpFunc.FromConverter typeFilter
 
-    let regs = rootAssembly |> DiscoverAssemblies (Some assemblyFilterFSharp) |> FromAssemblies initRegsFSharp (Some typeFilterFSharp)
-    regs.ToList()
+    FromRootAssembly initRegs rootAssembly (Some assemblyFilterFs) (Some typeFilterFs)
 
 let FromRootAssemblyCSharp2 (shortLivingType:Type) rootAssembly (assemblyFilter:Converter<Assembly, bool>) (typeFilter:System.Converter<Type, bool>) =
-    let initRegsFSharp = [{defaultRegistration with classType = shortLivingType; lifetime = Some 3 }]
-    let assemblyFilterFSharp = FSharpFunc.FromConverter assemblyFilter
-    let typeFilterFSharp = FSharpFunc.FromConverter typeFilter
+    let initRegs = [{defaultRegistration with classType = shortLivingType; lifetime = Some 3 }]
+    let assemblyFilterFs = FSharpFunc.FromConverter assemblyFilter
+    let typeFilterFs = FSharpFunc.FromConverter typeFilter
 
-    let regs = rootAssembly |> DiscoverAssemblies (Some assemblyFilterFSharp) |> FromAssemblies initRegsFSharp (Some typeFilterFSharp)
-    regs.ToList()
+    FromRootAssembly initRegs rootAssembly (Some assemblyFilterFs) (Some typeFilterFs)
