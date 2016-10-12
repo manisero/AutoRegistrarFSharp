@@ -3,7 +3,7 @@
 open System
 open System.Collections.Generic
 open Shared
-open Domain
+open Manisero.AutoRegistrar.Domain
 
 let getDepTypes (clas:Type) =
     let ctor =
@@ -14,7 +14,7 @@ let getDepTypes (clas:Type) =
     ctor.GetParameters() |> Array.map (fun x -> x.ParameterType) |> Array.distinct |> Array.toList
 
 let findReg (map:IDictionary<Type, Registration>) typ =
-    let mutable reg = defaultRegistration
+    let mutable reg = new Registration(null)
 
     match map.TryGetValue(typ, &reg) with
     | true -> reg
@@ -22,7 +22,7 @@ let findReg (map:IDictionary<Type, Registration>) typ =
 
 let BuildDependencyGraph regs =
     let map = buildTypeToRegMap regs
-    let getDeps reg = reg.classType |> getDepTypes |> List.map (findReg map)
+    let getDeps (reg:Registration) = reg.ClassType |> getDepTypes |> List.map (findReg map)
 
-    regs |> List.iter (fun x -> x.dependencies <- getDeps x)
+    regs |> List.iter (fun x -> x.Dependencies <- getDeps x)
     regs

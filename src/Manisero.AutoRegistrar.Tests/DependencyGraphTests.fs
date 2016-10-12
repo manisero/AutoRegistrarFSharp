@@ -3,18 +3,18 @@
 open System
 open Xunit
 open FsUnit.Xunit
-open Domain
+open Manisero.AutoRegistrar.Domain
 open Manisero.AutoRegistrar.TestClasses
 open TestsHelpers
 open DependencyGraph
 
 // test data
 
-let r1Reg = { defaultRegistration with classType = typeof<R1>; interfaceTypes = Some [typeof<IR1>] }
-let r2Reg = { defaultRegistration with classType = typeof<R2>; interfaceTypes = Some [typeof<R2_Base>; typeof<IR2_1>; typeof<IR2_2>] }
-let c1aReg = { defaultRegistration with classType = typeof<C1A_R1>; interfaceTypes = Some [typeof<IC1A_R1>] }
-let c1bReg = { defaultRegistration with classType = typeof<C1B_R1_R2>; interfaceTypes = Some [typeof<IC1B_R1_R2>] }
-let c1cReg = { defaultRegistration with classType = typeof<C1C_R1_R1>; interfaceTypes = Some [typeof<IC1C_R1_R1>] }
+let r1Reg = new Registration(typeof<R1>, InterfaceTypes = Some [typeof<IR1>])
+let r2Reg = new Registration(typeof<R2>, InterfaceTypes = Some [typeof<R2_Base>; typeof<IR2_1>; typeof<IR2_2>])
+let c1aReg = new Registration(typeof<C1A_R1>, InterfaceTypes = Some [typeof<IC1A_R1>])
+let c1bReg = new Registration(typeof<C1B_R1_R2>, InterfaceTypes = Some [typeof<IC1B_R1_R2>])
+let c1cReg = new Registration(typeof<C1C_R1_R1>, InterfaceTypes = Some [typeof<IC1C_R1_R1>])
 
 // getDepTypes
 
@@ -69,11 +69,11 @@ let ``findReg: no matching reg -> error`` case =
 // BuildDependencyGraph
 let buildDependencyGraphCases =
     [
-        (r1Reg.classType, []);
-        (r2Reg.classType, []);
-        (c1aReg.classType, [r1Reg]);
-        (c1bReg.classType, [r1Reg; r2Reg]);
-        (c1cReg.classType, [r1Reg])
+        (r1Reg.ClassType, []);
+        (r2Reg.ClassType, []);
+        (c1aReg.ClassType, [r1Reg]);
+        (c1bReg.ClassType, [r1Reg; r2Reg]);
+        (c1cReg.ClassType, [r1Reg])
     ]
 
 [<Theory>]
@@ -85,16 +85,16 @@ let buildDependencyGraphCases =
 let ``BuildDependencyGraph: -> deps filled`` case =
     let regs =
         [
-            { r1Reg with classType = r1Reg.classType };
-            { r2Reg with classType = r2Reg.classType };
-            { c1aReg with classType = c1aReg.classType };
-            { c1bReg with classType = c1bReg.classType };
-            { c1cReg with classType = c1cReg.classType }
+            new Registration(r1Reg.ClassType, InterfaceTypes = r1Reg.InterfaceTypes);
+            new Registration(r2Reg.ClassType, InterfaceTypes = r2Reg.InterfaceTypes);
+            new Registration(c1aReg.ClassType, InterfaceTypes = c1aReg.InterfaceTypes);
+            new Registration(c1bReg.ClassType, InterfaceTypes = c1bReg.InterfaceTypes);
+            new Registration(c1cReg.ClassType, InterfaceTypes = c1cReg.InterfaceTypes)
         ]
     let (regClass, expDeps) = buildDependencyGraphCases.[case]
 
     let res = BuildDependencyGraph regs
 
     res |> should equal regs
-    regs |> List.find (fun x -> x.classType = regClass) |> (fun x -> x.dependencies) |> should equal expDeps
+    regs |> List.find (fun x -> x.ClassType = regClass) |> (fun x -> x.Dependencies) |> should equal expDeps
     

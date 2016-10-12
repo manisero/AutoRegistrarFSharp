@@ -3,7 +3,7 @@
 open System
 open System.Collections.Generic
 open System.Reflection
-open Domain
+open Manisero.AutoRegistrar.Domain
 
 let buildTypFilter (initTypes:ISet<Type>) customFilter =
     match customFilter with
@@ -12,12 +12,12 @@ let buildTypFilter (initTypes:ISet<Type>) customFilter =
 
 let getRegsFromAss filter ass =
     let getTypes filter (ass:Assembly) = ass.ExportedTypes |> Seq.filter filter
-    let toReg typ = { defaultRegistration with classType = typ }
+    let toReg typ = new Registration(typ)
 
     ass |> getTypes filter |> Seq.map toReg
 
 let DiscoverRegistrations initRegs typeFilter (assemblies:Assembly list) =
-    let initTypes = new HashSet<Type>(initRegs |> Seq.map (fun x -> x.classType))
+    let initTypes = new HashSet<Type>(initRegs |> List.map (fun (x:Registration) -> x.ClassType))
     let filter = buildTypFilter initTypes typeFilter
 
     let newRegs = assemblies |> List.map (getRegsFromAss filter) |> Seq.concat |> Seq.toList

@@ -2,34 +2,34 @@
 
 open Xunit
 open FsUnit.Xunit
-open Domain
+open Manisero.AutoRegistrar.Domain
 open Manisero.AutoRegistrar.TestClasses
 open TestsHelpers
 open DependancyLevels
 
 // test data
 
-let r1Reg = { defaultRegistration with classType = typeof<R1>; }
-let r2Reg = { defaultRegistration with classType = typeof<R2>; }
-let c1aReg = { defaultRegistration with classType = typeof<C1A_R1>; dependencies = [r1Reg] }
-let c1bReg = { defaultRegistration with classType = typeof<C1B_R1_R2>; dependencies = [r1Reg; r2Reg] }
-let c1cReg = { defaultRegistration with classType = typeof<C1C_R1_R1>; dependencies = [r1Reg] }
-let c2aReg = { defaultRegistration with classType = typeof<C2A_R2_C1C>; dependencies = [r1Reg; c1cReg] }
-let selfDepReg = { defaultRegistration with classType = typeof<SelfDependency> }
-selfDepReg.dependencies <- [selfDepReg]
-let cyclicDep1Reg = { defaultRegistration with classType = typeof<CyclicDependency1> }
-let cyclicDep2Reg = { defaultRegistration with classType = typeof<CyclicDependency2> }
-cyclicDep1Reg.dependencies <- [cyclicDep2Reg]
-cyclicDep2Reg.dependencies <- [cyclicDep1Reg]
+let r1Reg = new Registration(typeof<R1>)
+let r2Reg = new Registration(typeof<R2>)
+let c1aReg = new Registration(typeof<C1A_R1>, Dependencies = [r1Reg])
+let c1bReg = new Registration(typeof<C1B_R1_R2>, Dependencies = [r1Reg; r2Reg])
+let c1cReg = new Registration(typeof<C1C_R1_R1>, Dependencies = [r1Reg])
+let c2aReg = new Registration(typeof<C2A_R2_C1C>, Dependencies = [r1Reg; c1cReg])
+let selfDepReg = new Registration(typeof<SelfDependency>)
+selfDepReg.Dependencies <- [selfDepReg]
+let cyclicDep1Reg = new Registration(typeof<CyclicDependency1>)
+let cyclicDep2Reg = new Registration(typeof<CyclicDependency2>)
+cyclicDep1Reg.Dependencies <- [cyclicDep2Reg]
+cyclicDep2Reg.Dependencies <- [cyclicDep1Reg]
 
 // tryAssignLvl
 
 let tryAssignLvlSuccessCases =
     [
         ([], 0);
-        ([{ defaultRegistration with dependancyLevel = Some 0 }], 1);
-        ([{ defaultRegistration with dependancyLevel = Some 1 }], 2);
-        ([{ defaultRegistration with dependancyLevel = Some 0 }; { defaultRegistration with dependancyLevel = Some 1 }], 2)
+        ([new Registration(null, DependancyLevel = Some 0)], 1);
+        ([new Registration(null, DependancyLevel = Some 1)], 2);
+        ([new Registration(null, DependancyLevel = Some 0); new Registration(null, DependancyLevel = Some 1)], 2)
     ]
 
 [<Theory>]
@@ -39,17 +39,17 @@ let tryAssignLvlSuccessCases =
 [<InlineData(3)>]
 let ``tryAssignLvl: all deps have lvl -> true, dependancyLevel = highest dep lvl + 1`` case =
     let (deps, expLvl) = tryAssignLvlSuccessCases.[case]
-    let reg = { defaultRegistration with dependencies = deps }
+    let reg = new Registration(null, Dependencies = deps)
 
     let res = tryAssignLvl reg
 
-    reg.dependancyLevel.Value |> should equal expLvl
+    reg.DependancyLevel.Value |> should equal expLvl
     res |> should equal true
 
 let tryAssignLvlFailureCases =
     [
-        [{ defaultRegistration with dependancyLevel = None }];
-        [{ defaultRegistration with dependancyLevel = Some 1 }; { defaultRegistration with dependancyLevel = None }]
+        [new Registration(null, DependancyLevel = None)];
+        [new Registration(null, DependancyLevel = Some 1); new Registration(null, DependancyLevel = None)]
     ]
 
 [<Theory>]
@@ -57,22 +57,22 @@ let tryAssignLvlFailureCases =
 [<InlineData(1)>]
 let ``tryAssignLvl: some deps don't have lvl -> false, dependancyLevel None`` case =
     let deps = tryAssignLvlFailureCases.[case]
-    let reg = { defaultRegistration with dependencies = deps }
+    let reg = new Registration(null, Dependencies = deps)
 
     let res = tryAssignLvl reg
 
-    reg.dependancyLevel |> should equal None
+    reg.DependancyLevel |> should equal None
     res |> should equal false
 
 // AssignDependancyLevels
 
 let assignDependancyLevelsCases =
     [
-        (r1Reg.classType, 0);
-        (c1aReg.classType, 1);
-        (c1bReg.classType, 1);
-        (c1cReg.classType, 1);
-        (c2aReg.classType, 2)
+        (r1Reg.ClassType, 0);
+        (c1aReg.ClassType, 1);
+        (c1bReg.ClassType, 1);
+        (c1cReg.ClassType, 1);
+        (c2aReg.ClassType, 2)
     ]
 
 [<Theory>]
@@ -84,19 +84,19 @@ let assignDependancyLevelsCases =
 let ``AssignDependancyLevels: -> dependancyLevel set`` case =
     let (regClass, expLvl) = assignDependancyLevelsCases.[case]
 
-    let r1Reg = { r1Reg with classType = r1Reg.classType }
-    let r2Reg = { r2Reg with classType = r2Reg.classType }
-    let c1aReg = { c1aReg with dependencies = [r1Reg] }
-    let c1bReg = { c1bReg with dependencies = [r1Reg; r2Reg] }
-    let c1cReg = { c1cReg with dependencies = [r1Reg] }
-    let c2aReg = { c2aReg with dependencies = [r1Reg; c1cReg] }
+    let r1Reg = new Registration(r1Reg.ClassType)
+    let r2Reg = new Registration(r2Reg.ClassType)
+    let c1aReg = new Registration(c1aReg.ClassType, Dependencies = [r1Reg])
+    let c1bReg = new Registration(c1bReg.ClassType, Dependencies = [r1Reg; r2Reg])
+    let c1cReg = new Registration(c1cReg.ClassType, Dependencies = [r1Reg])
+    let c2aReg = new Registration(c2aReg.ClassType, Dependencies = [r1Reg; c1cReg])
 
     let regs = List.rev [ c2aReg; c1cReg; r2Reg; c1aReg; r1Reg; c1bReg; ] // Random order to force more than one iteration over regs
 
     let res = AssignDependancyLevels regs
 
     res |> should equal regs
-    regs |> List.find (fun x -> x.classType = regClass) |> (fun x -> x.dependancyLevel) |> should equal (Some expLvl)
+    regs |> List.find (fun x -> x.ClassType = regClass) |> (fun x -> x.DependancyLevel) |> should equal (Some expLvl)
 
 let assignDependancyLevelsErrorCases =
     [

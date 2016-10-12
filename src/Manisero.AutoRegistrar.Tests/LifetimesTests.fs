@@ -2,22 +2,22 @@
 
 open Xunit
 open FsUnit.Xunit
-open Domain
+open Manisero.AutoRegistrar.Domain
 open Manisero.AutoRegistrar.TestClasses
 open TestsHelpers
 open Lifetimes
 
 // test data
 
-let r1Reg = { defaultRegistration with classType = typeof<R1>; dependancyLevel = Some 0 }
-let r1RegRes = { r1Reg with lifetime = Some 1 }
-let r2Reg = { defaultRegistration with classType = typeof<R2>; dependancyLevel = Some 0; }
-let r2RegRes = { r2Reg with lifetime = Some 2 }
-let c1aReg = { defaultRegistration with classType = typeof<C1A_R1>; dependencies = [r1Reg]; dependancyLevel = Some 1 }
-let c1bReg = { defaultRegistration with classType = typeof<C1B_R1_R2>; dependencies = [r1Reg; r2RegRes]; dependancyLevel = Some 1; }
-let c1cReg = { defaultRegistration with classType = typeof<C1C_R1_R1>; dependencies = [r1Reg]; dependancyLevel = Some 1; }
-let c1cRegRes = { c1cReg with lifetime = Some 4 }
-let c2aReg = { defaultRegistration with classType = typeof<C2A_R2_C1C>; dependencies = [r1Reg; c1cRegRes]; dependancyLevel = Some 2 }
+let r1Reg = new Registration(typeof<R1>, DependancyLevel = Some 0)
+let r1RegRes = new Registration(r1Reg.ClassType, Lifetime = Some 1)
+let r2Reg = new Registration(typeof<R2>, DependancyLevel = Some 0)
+let r2RegRes = new Registration(r2Reg.ClassType, Lifetime = Some 2)
+let c1aReg = new Registration(typeof<C1A_R1>, Dependencies = [r1Reg], DependancyLevel = Some 1)
+let c1bReg = new Registration(typeof<C1B_R1_R2>, Dependencies = [r1Reg; r2RegRes], DependancyLevel = Some 1)
+let c1cReg = new Registration(typeof<C1C_R1_R1>, Dependencies = [r1Reg], DependancyLevel = Some 1)
+let c1cRegRes = new Registration(c1cReg.ClassType, Lifetime = Some 4)
+let c2aReg = new Registration(typeof<C2A_R2_C1C>, Dependencies = [r1Reg; c1cRegRes], DependancyLevel = Some 2)
 
 // resolveLifetime
 
@@ -25,19 +25,19 @@ let c2aReg = { defaultRegistration with classType = typeof<C2A_R2_C1C>; dependen
 [<InlineData(1)>]
 [<InlineData(2)>]
 let ``resolveLifetime: already resolved -> longestLifetime stays intact`` lifetime =
-    let reg = { defaultRegistration with lifetime = Some lifetime }
+    let reg = new Registration(null, Lifetime = Some lifetime)
 
     resolveLifetime reg
 
-    reg.lifetime |> should equal (Some lifetime)
+    reg.Lifetime |> should equal (Some lifetime)
 
 [<Fact>]
 let ``resolveLifetime: no deps -> lifetime = longestLifetime`` = 
-    let reg = { defaultRegistration with dependencies = [] }
+    let reg = new Registration(null, Dependencies = [])
 
     resolveLifetime reg
 
-    reg.lifetime |> should equal longestLifetime
+    reg.Lifetime |> should equal Registration.LongestLifetime
 
 let resolveLifetimeDepsCases =
     [
@@ -50,11 +50,11 @@ let resolveLifetimeDepsCases =
 [<InlineData(1)>]
 let ``resolveLifetime: deps -> lifetime derived from shortest living dep`` case = 
     let (deps, exp) = resolveLifetimeDepsCases.[case]
-    let reg = { defaultRegistration with dependencies = deps }
+    let reg = new Registration(null, Dependencies = deps)
 
     resolveLifetime reg
 
-    reg.lifetime |> should equal (Some exp)
+    reg.Lifetime |> should equal (Some exp)
 
 let resolveLifetimeErrorCases =
     [
@@ -67,7 +67,7 @@ let resolveLifetimeErrorCases =
 [<InlineData(1)>]
 let ``resolveLifetime: dep with no lifetime -> error`` case = 
     let deps = resolveLifetimeErrorCases.[case]
-    let reg = { r1Reg with dependencies = deps }
+    let reg = new Registration(r1Reg.ClassType, Dependencies = deps, DependancyLevel = r1Reg.DependancyLevel)
     
     (fun () -> resolveLifetime reg) |> assertInvalidOp
 
@@ -75,12 +75,12 @@ let ``resolveLifetime: dep with no lifetime -> error`` case =
 
 let ResolveLifetimesCases =
     [
-        (r1Reg.classType, longestLifetime);
-        (r2RegRes.classType, r2RegRes.lifetime);
-        (c1aReg.classType, longestLifetime);
-        (c1bReg.classType, r2RegRes.lifetime);
-        (c1cRegRes.classType, c1cRegRes.lifetime);
-        (c2aReg.classType, c1cRegRes.lifetime);
+        (r1Reg.ClassType, Registration.LongestLifetime);
+        (r2RegRes.ClassType, r2RegRes.Lifetime);
+        (c1aReg.ClassType, Registration.LongestLifetime);
+        (c1bReg.ClassType, r2RegRes.Lifetime);
+        (c1cRegRes.ClassType, c1cRegRes.Lifetime);
+        (c2aReg.ClassType, c1cRegRes.Lifetime);
     ]
 
 [<Theory>]
@@ -93,24 +93,24 @@ let ResolveLifetimesCases =
 let ``ResolveLifetimes: -> lifetime set`` case = 
     let (regClass, expLifetime) = ResolveLifetimesCases.[case]
 
-    let r1Reg = { r1Reg with classType = r1Reg.classType; }
-    let r2RegRes = { r2RegRes with classType = r2RegRes.classType }
-    let c1aReg = { c1aReg with dependencies = [r1Reg] }
-    let c1bReg = { c1bReg with dependencies = [r1Reg; r2RegRes] }
-    let c1cRegRes = { c1cRegRes with dependencies = [r1Reg] }
-    let c2aReg = { c2aReg with dependencies = [r1Reg; c1cRegRes] }
+    let r1Reg = new Registration(r1Reg.ClassType)
+    let r2RegRes = new Registration(r2RegRes.ClassType)
+    let c1aReg = new Registration(c1aReg.ClassType, Dependencies = [r1Reg], DependancyLevel = c1aReg.DependancyLevel)
+    let c1bReg = new Registration(c1bReg.ClassType, Dependencies = [r1Reg; r2RegRes], DependancyLevel = c1bReg.DependancyLevel)
+    let c1cRegRes = new Registration(c1cRegRes.ClassType, Dependencies = [r1Reg], Lifetime = c1cRegRes.Lifetime)
+    let c2aReg = new Registration(c2aReg.ClassType, Dependencies = [r1Reg; c1cRegRes], DependancyLevel = c2aReg.Lifetime)
 
     let regs = List.rev [ c2aReg; c1cRegRes; r2RegRes; c1aReg; r1Reg; c1bReg; ] // Random order to force proper order of lifetime resolution
 
     let res = ResolveLifetimes regs
 
     res |> should equal regs
-    regs |> List.find (fun x -> x.classType = regClass) |> (fun x -> x.lifetime) |> should equal expLifetime
+    regs |> List.find (fun x -> x.ClassType = regClass) |> (fun x -> x.Lifetime) |> should equal expLifetime
 
 let ResolveLifetimesErrorCases =
     [
-        [{ r1Reg with dependancyLevel = None }];
-        [r1Reg; { r2Reg with dependancyLevel = None }];
+        [new Registration(r1Reg.ClassType)];
+        [r1Reg; new Registration(r2Reg.ClassType)];
     ]
 
 [<Theory>]
