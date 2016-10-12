@@ -10,13 +10,13 @@ open Lifetimes
 // test data
 
 let r1Reg = new Registration(typeof<R1>, DependancyLevel = Some 0)
-let r1RegRes = new Registration(r1Reg.ClassType, Lifetime = Some 1)
+let r1RegRes = new Registration(r1Reg.ClassType, DependancyLevel = r1Reg.DependancyLevel, Lifetime = Some 1)
 let r2Reg = new Registration(typeof<R2>, DependancyLevel = Some 0)
-let r2RegRes = new Registration(r2Reg.ClassType, Lifetime = Some 2)
+let r2RegRes = new Registration(r2Reg.ClassType, DependancyLevel = r2Reg.DependancyLevel, Lifetime = Some 2)
 let c1aReg = new Registration(typeof<C1A_R1>, Dependencies = [r1Reg], DependancyLevel = Some 1)
 let c1bReg = new Registration(typeof<C1B_R1_R2>, Dependencies = [r1Reg; r2RegRes], DependancyLevel = Some 1)
 let c1cReg = new Registration(typeof<C1C_R1_R1>, Dependencies = [r1Reg], DependancyLevel = Some 1)
-let c1cRegRes = new Registration(c1cReg.ClassType, Lifetime = Some 4)
+let c1cRegRes = new Registration(c1cReg.ClassType, Dependencies = c1cReg.Dependencies, DependancyLevel = c1cReg.DependancyLevel, Lifetime = Some 4)
 let c2aReg = new Registration(typeof<C2A_R2_C1C>, Dependencies = [r1Reg; c1cRegRes], DependancyLevel = Some 2)
 
 // resolveLifetime
@@ -93,12 +93,12 @@ let ResolveLifetimesCases =
 let ``ResolveLifetimes: -> lifetime set`` case = 
     let (regClass, expLifetime) = ResolveLifetimesCases.[case]
 
-    let r1Reg = new Registration(r1Reg.ClassType)
-    let r2RegRes = new Registration(r2RegRes.ClassType)
+    let r1Reg = new Registration(r1Reg.ClassType, DependancyLevel = r1Reg.DependancyLevel)
+    let r2RegRes = new Registration(r2RegRes.ClassType, DependancyLevel = r2RegRes.DependancyLevel, Lifetime = r2RegRes.Lifetime)
     let c1aReg = new Registration(c1aReg.ClassType, Dependencies = [r1Reg], DependancyLevel = c1aReg.DependancyLevel)
     let c1bReg = new Registration(c1bReg.ClassType, Dependencies = [r1Reg; r2RegRes], DependancyLevel = c1bReg.DependancyLevel)
-    let c1cRegRes = new Registration(c1cRegRes.ClassType, Dependencies = [r1Reg], Lifetime = c1cRegRes.Lifetime)
-    let c2aReg = new Registration(c2aReg.ClassType, Dependencies = [r1Reg; c1cRegRes], DependancyLevel = c2aReg.Lifetime)
+    let c1cRegRes = new Registration(c1cRegRes.ClassType, Dependencies = [r1Reg], DependancyLevel = c1cRegRes.DependancyLevel, Lifetime = c1cRegRes.Lifetime)
+    let c2aReg = new Registration(c2aReg.ClassType, Dependencies = [r1Reg; c1cRegRes], DependancyLevel = c2aReg.DependancyLevel)
 
     let regs = List.rev [ c2aReg; c1cRegRes; r2RegRes; c1aReg; r1Reg; c1bReg; ] // Random order to force proper order of lifetime resolution
 
