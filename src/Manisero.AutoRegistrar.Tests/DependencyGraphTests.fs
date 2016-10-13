@@ -71,9 +71,9 @@ let buildDependencyGraphCases =
     [
         (r1Reg.ClassType, []);
         (r2Reg.ClassType, []);
-        (c1aReg.ClassType, [r1Reg]);
-        (c1bReg.ClassType, [r1Reg; r2Reg]);
-        (c1cReg.ClassType, [r1Reg])
+        (c1aReg.ClassType, [r1Reg.ClassType]);
+        (c1bReg.ClassType, [r1Reg.ClassType; r2Reg.ClassType]);
+        (c1cReg.ClassType, [r1Reg.ClassType])
     ]
 
 [<Theory>]
@@ -91,10 +91,10 @@ let ``BuildDependencyGraph: -> deps filled`` case =
             new Registration(c1bReg.ClassType, InterfaceTypes = c1bReg.InterfaceTypes);
             new Registration(c1cReg.ClassType, InterfaceTypes = c1cReg.InterfaceTypes)
         ]
-    let (regClass, expDeps) = buildDependencyGraphCases.[case]
+    let (regClass, expDepClasses) = buildDependencyGraphCases.[case]
 
     let res = BuildDependencyGraph regs
 
     res |> should equal regs
-    regs |> List.find (fun x -> x.ClassType = regClass) |> (fun x -> x.Dependencies) |> should equal expDeps
+    regs |> List.find (fun x -> x.ClassType = regClass) |> (fun x -> x.Dependencies) |> List.map (fun x -> x.ClassType) |> should equal expDepClasses
     
