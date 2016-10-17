@@ -1,6 +1,7 @@
 ﻿module Manisero.AutoRegistrar.LifetimesTests
 
 open System
+open System.Collections.Generic
 open Xunit
 open FsUnit.Xunit
 open Manisero.AutoRegistrar.Domain
@@ -14,11 +15,11 @@ let r1Reg = new Registration(typeof<R1>, DependancyLevel = Nullable 0)
 let r1RegRes = new Registration(r1Reg.ClassType, DependancyLevel = r1Reg.DependancyLevel, Lifetime = Nullable 1)
 let r2Reg = new Registration(typeof<R2>, DependancyLevel = Nullable 0)
 let r2RegRes = new Registration(r2Reg.ClassType, DependancyLevel = r2Reg.DependancyLevel, Lifetime = Nullable 2)
-let c1aReg = new Registration(typeof<C1A_R1>, Dependencies = [r1Reg], DependancyLevel = Nullable 1)
-let c1bReg = new Registration(typeof<C1B_R1_R2>, Dependencies = [r1Reg; r2RegRes], DependancyLevel = Nullable 1)
-let c1cReg = new Registration(typeof<C1C_R1_R1>, Dependencies = [r1Reg], DependancyLevel = Nullable 1)
+let c1aReg = new Registration(typeof<C1A_R1>, Dependencies = new List<Registration>([r1Reg]), DependancyLevel = Nullable 1)
+let c1bReg = new Registration(typeof<C1B_R1_R2>, Dependencies = new List<Registration>([r1Reg; r2RegRes]), DependancyLevel = Nullable 1)
+let c1cReg = new Registration(typeof<C1C_R1_R1>, Dependencies = new List<Registration>([r1Reg]), DependancyLevel = Nullable 1)
 let c1cRegRes = new Registration(c1cReg.ClassType, Dependencies = c1cReg.Dependencies, DependancyLevel = c1cReg.DependancyLevel, Lifetime = Nullable 4)
-let c2aReg = new Registration(typeof<C2A_R2_C1C>, Dependencies = [r1Reg; c1cRegRes], DependancyLevel = Nullable 2)
+let c2aReg = new Registration(typeof<C2A_R2_C1C>, Dependencies = new List<Registration>([r1Reg; c1cRegRes]), DependancyLevel = Nullable 2)
 
 // resolveLifetime
 
@@ -34,7 +35,7 @@ let ``resolveLifetime: already resolved -> longestLifetime stays intact`` lifeti
 
 [<Fact>]
 let ``resolveLifetime: no deps -> lifetime = longestLifetime`` = 
-    let reg = new Registration(null, Dependencies = [])
+    let reg = new Registration(null, Dependencies = new List<Registration>())
 
     resolveLifetime reg
 
@@ -51,7 +52,7 @@ let resolveLifetimeDepsCases =
 [<InlineData(1)>]
 let ``resolveLifetime: deps -> lifetime derived from shortest living dep`` case = 
     let (deps, exp) = resolveLifetimeDepsCases.[case]
-    let reg = new Registration(null, Dependencies = deps)
+    let reg = new Registration(null, Dependencies = new List<Registration>(deps))
 
     resolveLifetime reg
 
@@ -68,7 +69,7 @@ let resolveLifetimeErrorCases =
 [<InlineData(1)>]
 let ``resolveLifetime: dep with no lifetime -> error`` case = 
     let deps = resolveLifetimeErrorCases.[case]
-    let reg = new Registration(r1Reg.ClassType, Dependencies = deps, DependancyLevel = r1Reg.DependancyLevel)
+    let reg = new Registration(r1Reg.ClassType, Dependencies = new List<Registration>(deps), DependancyLevel = r1Reg.DependancyLevel)
     
     (fun () -> resolveLifetime reg) |> assertInvalidOp
 
@@ -96,10 +97,10 @@ let ``ResolveLifetimes: -> lifetime set`` case =
 
     let r1Reg = new Registration(r1Reg.ClassType, DependancyLevel = r1Reg.DependancyLevel)
     let r2RegRes = new Registration(r2RegRes.ClassType, DependancyLevel = r2RegRes.DependancyLevel, Lifetime = r2RegRes.Lifetime)
-    let c1aReg = new Registration(c1aReg.ClassType, Dependencies = [r1Reg], DependancyLevel = c1aReg.DependancyLevel)
-    let c1bReg = new Registration(c1bReg.ClassType, Dependencies = [r1Reg; r2RegRes], DependancyLevel = c1bReg.DependancyLevel)
-    let c1cRegRes = new Registration(c1cRegRes.ClassType, Dependencies = [r1Reg], DependancyLevel = c1cRegRes.DependancyLevel, Lifetime = c1cRegRes.Lifetime)
-    let c2aReg = new Registration(c2aReg.ClassType, Dependencies = [r1Reg; c1cRegRes], DependancyLevel = c2aReg.DependancyLevel)
+    let c1aReg = new Registration(c1aReg.ClassType, Dependencies = new List<Registration>([r1Reg]), DependancyLevel = c1aReg.DependancyLevel)
+    let c1bReg = new Registration(c1bReg.ClassType, Dependencies = new List<Registration>([r1Reg; r2RegRes]), DependancyLevel = c1bReg.DependancyLevel)
+    let c1cRegRes = new Registration(c1cRegRes.ClassType, Dependencies = new List<Registration>([r1Reg]), DependancyLevel = c1cRegRes.DependancyLevel, Lifetime = c1cRegRes.Lifetime)
+    let c2aReg = new Registration(c2aReg.ClassType, Dependencies = new List<Registration>([r1Reg; c1cRegRes]), DependancyLevel = c2aReg.DependancyLevel)
 
     let regs = List.rev [ c2aReg; c1cRegRes; r2RegRes; c1aReg; r1Reg; c1bReg; ] // Random order to force proper order of lifetime resolution
 

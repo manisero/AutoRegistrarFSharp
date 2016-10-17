@@ -6,10 +6,10 @@ open Manisero.AutoRegistrar.Domain
 let tryAssignLvl (reg:Registration) =
     let getMaxDepLvl (reg:Registration) = reg.Dependencies |> Seq.map (fun x -> x.DependancyLevel.Value) |> Seq.max
 
-    if (reg.Dependencies |> List.forall (fun x -> x.DependancyLevel.HasValue))
+    if (reg.Dependencies |> Seq.forall (fun x -> x.DependancyLevel.HasValue))
     then
         reg.DependancyLevel <-
-            match reg.Dependencies.Length with
+            match reg.Dependencies.Count with
             | 0 -> Nullable 0
             | _ -> Nullable ((reg |> getMaxDepLvl) + 1)
         

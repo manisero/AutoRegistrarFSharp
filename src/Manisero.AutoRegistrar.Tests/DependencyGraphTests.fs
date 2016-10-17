@@ -1,6 +1,7 @@
 ﻿module Manisero.AutoRegistrar.DependencyGraphTests
 
 open System
+open System.Collections.Generic
 open Xunit
 open FsUnit.Xunit
 open Manisero.AutoRegistrar.Domain
@@ -96,5 +97,5 @@ let ``BuildDependencyGraph: -> deps filled`` case =
     let res = BuildDependencyGraph regs
 
     res |> should equal regs
-    regs |> List.find (fun x -> x.ClassType = regClass) |> (fun x -> x.Dependencies) |> List.map (fun x -> x.ClassType) |> should equal expDepClasses
+    regs |> List.find (fun x -> x.ClassType = regClass) |> (fun x -> x.Dependencies) |> Seq.map (fun x -> x.ClassType) |> Seq.toList |> should equal expDepClasses
     

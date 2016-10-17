@@ -6,10 +6,10 @@ open Manisero.AutoRegistrar.Domain
 let resolveLifetime (reg:Registration) =
     if (reg.Lifetime.HasValue)
         then ignore null
-    elif (reg.Dependencies.Length = 0)
+    elif (reg.Dependencies.Count = 0)
         then reg.Lifetime <- Nullable Registration.LongestLifetime
-    elif (reg.Dependencies |> List.forall (fun x -> x.Lifetime.HasValue))
-        then reg.Lifetime <- reg.Dependencies |> List.map (fun x -> x.Lifetime.Value) |> List.max |> Nullable
+    elif (reg.Dependencies |> Seq.forall (fun x -> x.Lifetime.HasValue))
+        then reg.Lifetime <- reg.Dependencies |> Seq.map (fun x -> x.Lifetime.Value) |> Seq.max |> Nullable
     else
         invalidOp (sprintf "Cannot resolve lifetime for '%s' type as some of its dependencies do not have lifetime assigned." reg.ClassType.FullName)
 

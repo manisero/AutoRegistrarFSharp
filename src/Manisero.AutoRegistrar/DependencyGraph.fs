@@ -24,5 +24,5 @@ let BuildDependencyGraph regs =
     let map = buildTypeToRegMap regs
     let getDeps (reg:Registration) = reg.ClassType |> getDepTypes |> List.map (findReg map)
 
-    regs |> List.iter (fun x -> x.Dependencies <- getDeps x)
+    regs |> List.iter (fun x -> x.Dependencies <- new List<Registration>(getDeps x))
     regs
