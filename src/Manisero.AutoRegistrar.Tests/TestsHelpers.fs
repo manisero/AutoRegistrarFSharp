@@ -10,6 +10,13 @@ let assertEqualsOption exp item =
         item |> Option.get |> should equal (Option.get exp)
     | false -> item |> should be Null
 
+let assertEqualsNullable (exp:'a Nullable) (item:'a Nullable) =
+    match exp.HasValue with
+    | true ->
+        item |> should not' (be Null)
+        item.Value |> should equal exp.Value
+    | false -> item |> should be Null
+
 let assertContains items list =
     items |> List.iter (fun x -> list |> should contain x)
 

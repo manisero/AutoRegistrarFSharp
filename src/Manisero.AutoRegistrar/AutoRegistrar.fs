@@ -29,7 +29,7 @@ let FromRootAssemblyCSharp initRegs rootAssembly (assemblyFilter:Converter<Assem
     FromRootAssembly initRegs rootAssembly (Some assemblyFilterFs) (Some typeFilterFs)
 
 let FromRootAssemblyCSharp2 (shortLivingType:Type) rootAssembly (assemblyFilter:Converter<Assembly, bool>) (typeFilter:System.Converter<Type, bool>) =
-    let initRegs = [new Registration(shortLivingType, Lifetime = Some 3)]
+    let initRegs = [new Registration(shortLivingType, Lifetime = Nullable 3)]
     let assemblyFilterFs = FSharpFunc.FromConverter assemblyFilter
     let typeFilterFs = FSharpFunc.FromConverter typeFilter
 
