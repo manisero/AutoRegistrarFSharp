@@ -14,7 +14,7 @@ let getDepTypes (clas:Type) =
     ctor.GetParameters() |> Array.map (fun x -> x.ParameterType) |> Array.distinct |> Array.toList
 
 let findReg (map:IDictionary<Type, Registration>) typ =
-    let mutable reg = new Registration(null)
+    let mutable reg = null
 
     match map.TryGetValue(typ, &reg) with
     | true -> reg

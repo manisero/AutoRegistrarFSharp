@@ -3,6 +3,7 @@
 open System
 open System.Collections.Generic
 
+[<AllowNullLiteral>]
 type Registration(classType) =
     static member LongestLifetime = 1
 

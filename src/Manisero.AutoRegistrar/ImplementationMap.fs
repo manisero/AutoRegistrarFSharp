@@ -30,7 +30,7 @@ let handleInterType (handledTypes:ISet<Type>) (typeToRegMap:IDictionary<Type, Re
     if (handledTypes.Contains(inter))
     then ignore null
     else
-        let mutable existingReg = new Registration(null)
+        let mutable existingReg = null
 
         if (typeToRegMap.TryGetValue(inter, &existingReg))
         then handleConflict existingReg
