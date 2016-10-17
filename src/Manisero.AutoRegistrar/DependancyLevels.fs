@@ -1,23 +1,24 @@
 ﻿module Manisero.AutoRegistrar.DependancyLevels
 
+open System
 open Manisero.AutoRegistrar.Domain
 
 let tryAssignLvl (reg:Registration) =
-    let getMaxDepLvl (reg:Registration) = reg.Dependencies |> List.map (fun x -> x.DependancyLevel.Value) |> List.max
+    let getMaxDepLvl (reg:Registration) = reg.Dependencies |> Seq.map (fun x -> x.DependancyLevel.Value) |> Seq.max
 
-    if (reg.Dependencies |> List.forall (fun x -> x.DependancyLevel.IsSome))
+    if (reg.Dependencies |> List.forall (fun x -> x.DependancyLevel.HasValue))
     then
         reg.DependancyLevel <-
             match reg.Dependencies.Length with
-            | 0 -> Some 0
-            | _ -> Some ((reg |> getMaxDepLvl) + 1)
+            | 0 -> Nullable 0
+            | _ -> Nullable ((reg |> getMaxDepLvl) + 1)
         
         true
     else
         false
 
 let AssignDependancyLevels regs =
-    let hasNoLevel (reg:Registration) = reg.DependancyLevel.IsNone
+    let hasNoLevel (reg:Registration) = not reg.DependancyLevel.HasValue
     let tryAssignAll regs = regs |> List.filter hasNoLevel
                                  |> List.fold (fun anyAssined reg -> (tryAssignLvl reg) || anyAssined) false
     

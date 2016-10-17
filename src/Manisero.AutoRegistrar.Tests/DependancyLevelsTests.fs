@@ -1,5 +1,6 @@
 ﻿module Manisero.AutoRegistrar.DependancyLevelsTests
 
+open System
 open Xunit
 open FsUnit.Xunit
 open Manisero.AutoRegistrar.Domain
@@ -27,9 +28,9 @@ cyclicDep2Reg.Dependencies <- [cyclicDep1Reg]
 let tryAssignLvlSuccessCases =
     [
         ([], 0);
-        ([new Registration(null, DependancyLevel = Some 0)], 1);
-        ([new Registration(null, DependancyLevel = Some 1)], 2);
-        ([new Registration(null, DependancyLevel = Some 0); new Registration(null, DependancyLevel = Some 1)], 2)
+        ([new Registration(null, DependancyLevel = Nullable 0)], 1);
+        ([new Registration(null, DependancyLevel = Nullable 1)], 2);
+        ([new Registration(null, DependancyLevel = Nullable 0); new Registration(null, DependancyLevel = Nullable 1)], 2)
     ]
 
 [<Theory>]
@@ -48,8 +49,8 @@ let ``tryAssignLvl: all deps have lvl -> true, dependancyLevel = highest dep lvl
 
 let tryAssignLvlFailureCases =
     [
-        [new Registration(null, DependancyLevel = None)];
-        [new Registration(null, DependancyLevel = Some 1); new Registration(null, DependancyLevel = None)]
+        [new Registration(null, DependancyLevel = Nullable())];
+        [new Registration(null, DependancyLevel = Nullable 1); new Registration(null, DependancyLevel = Nullable())]
     ]
 
 [<Theory>]
@@ -96,7 +97,7 @@ let ``AssignDependancyLevels: -> dependancyLevel set`` case =
     let res = AssignDependancyLevels regs
 
     res |> should equal regs
-    regs |> List.find (fun x -> x.ClassType = regClass) |> (fun x -> x.DependancyLevel) |> should equal (Some expLvl)
+    regs |> List.find (fun x -> x.ClassType = regClass) |> (fun x -> x.DependancyLevel) |> assertEqualsNullable (Nullable expLvl)
 
 let assignDependancyLevelsErrorCases =
     [

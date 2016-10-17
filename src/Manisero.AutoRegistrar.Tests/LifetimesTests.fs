@@ -10,15 +10,15 @@ open Lifetimes
 
 // test data
 
-let r1Reg = new Registration(typeof<R1>, DependancyLevel = Some 0)
+let r1Reg = new Registration(typeof<R1>, DependancyLevel = Nullable 0)
 let r1RegRes = new Registration(r1Reg.ClassType, DependancyLevel = r1Reg.DependancyLevel, Lifetime = Nullable 1)
-let r2Reg = new Registration(typeof<R2>, DependancyLevel = Some 0)
+let r2Reg = new Registration(typeof<R2>, DependancyLevel = Nullable 0)
 let r2RegRes = new Registration(r2Reg.ClassType, DependancyLevel = r2Reg.DependancyLevel, Lifetime = Nullable 2)
-let c1aReg = new Registration(typeof<C1A_R1>, Dependencies = [r1Reg], DependancyLevel = Some 1)
-let c1bReg = new Registration(typeof<C1B_R1_R2>, Dependencies = [r1Reg; r2RegRes], DependancyLevel = Some 1)
-let c1cReg = new Registration(typeof<C1C_R1_R1>, Dependencies = [r1Reg], DependancyLevel = Some 1)
+let c1aReg = new Registration(typeof<C1A_R1>, Dependencies = [r1Reg], DependancyLevel = Nullable 1)
+let c1bReg = new Registration(typeof<C1B_R1_R2>, Dependencies = [r1Reg; r2RegRes], DependancyLevel = Nullable 1)
+let c1cReg = new Registration(typeof<C1C_R1_R1>, Dependencies = [r1Reg], DependancyLevel = Nullable 1)
 let c1cRegRes = new Registration(c1cReg.ClassType, Dependencies = c1cReg.Dependencies, DependancyLevel = c1cReg.DependancyLevel, Lifetime = Nullable 4)
-let c2aReg = new Registration(typeof<C2A_R2_C1C>, Dependencies = [r1Reg; c1cRegRes], DependancyLevel = Some 2)
+let c2aReg = new Registration(typeof<C2A_R2_C1C>, Dependencies = [r1Reg; c1cRegRes], DependancyLevel = Nullable 2)
 
 // resolveLifetime
 

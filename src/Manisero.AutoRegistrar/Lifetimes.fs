@@ -15,7 +15,7 @@ let resolveLifetime (reg:Registration) =
 
 let ResolveLifetimes regs =
     let checkReg (reg:Registration) =
-        if (reg.DependancyLevel.IsNone)
+        if (not reg.DependancyLevel.HasValue)
         then invalidOp (sprintf "Cannot resolve lifetime for '%s' type as it does not have dependancyLevel assigned." reg.ClassType.FullName)
 
     regs |> List.iter checkReg

@@ -8,5 +8,5 @@ type Registration(classType) =
     member val ClassType : Type = classType with get, set
     member val InterfaceTypes : Type list option = None with get, set
     member val Dependencies : Registration list = [] with get, set
-    member val DependancyLevel : int option = None with get, set
+    member val DependancyLevel : Nullable<int> = Nullable() with get, set
     member val Lifetime : Nullable<int> = Nullable() with get, set
