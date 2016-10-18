@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using Manisero.AutoRegistrar.Domain;
 using Manisero.AutoRegistrar.TestClasses;
 using Xunit;
@@ -8,16 +10,25 @@ namespace Manisero.AutoRegistrar.IntegrationTests
 {
     public class AutoRegistrarTests
     {
-        [Fact]
-        public void test()
+        [Theory]
+        [InlineData()]
+        public void resolves_registrations_from_root_assembly(Type testedType, Type[] expectedInterfaces, Type[] expectedDependencyTypes, int expectedDependancyLevel, int expectedLifetime)
         {
-            var testClassesAssembly = typeof(R1).Assembly;
-            var ignoredTypes = new HashSet<Type> { typeof(MultiCtors), typeof(SelfDependency), typeof(CyclicDependency1), typeof(CyclicDependency2) };
+            // Arrange
+            var initialRegistrations = new List<Registration> { new Registration(typeof(R2)) { Lifetime = 3 } };
+            var rootAssembly = typeof(R1).Assembly;
+            
+            Func<Assembly, bool> assemblyFilter = x => x == rootAssembly;
 
-            var result = AutoRegistrar.FromRootAssembly(new List<Registration> { new Registration(typeof(R2)) { Lifetime = 3 } },
-                                                        testClassesAssembly,
-                                                        x => x == testClassesAssembly,
-                                                        x => !ignoredTypes.Contains(x));
+            var ignoredTypes = new HashSet<Type> { typeof(MultiCtors), typeof(SelfDependency), typeof(CyclicDependency1), typeof(CyclicDependency2) };
+            Func<Type, bool> typeFilter = x => !ignoredTypes.Contains(x);
+
+            // Act
+            var result = AutoRegistrar.FromRootAssembly(initialRegistrations, rootAssembly, assemblyFilter, typeFilter);
+
+            // Assert
+            var testedRegistration = result.Single(x => x.ClassType == testedType);
+            
         }
     }
 }
