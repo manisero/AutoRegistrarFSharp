@@ -19,6 +19,11 @@
         public C1A_R1(R1 p1) {}
     }
 
+    public class C1A_IR1 : IC1A_R1
+    {
+        public C1A_IR1(IR1 p1) { }
+    }
+
     public interface IC1B_R1_R2 {}
     public class C1B_R1_R2 : IC1B_R1_R2
     {
