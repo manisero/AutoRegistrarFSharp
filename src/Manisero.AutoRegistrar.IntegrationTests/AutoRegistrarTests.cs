@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using FluentAssertions;
 using Manisero.AutoRegistrar.Domain;
 using Manisero.AutoRegistrar.TestClasses;
 using Xunit;
@@ -11,7 +12,7 @@ namespace Manisero.AutoRegistrar.IntegrationTests
     public class AutoRegistrarTests
     {
         [Theory]
-        [InlineData()]
+        [InlineData(typeof(R1), new[] {typeof(IR1)}, new Type[0], 0, 1)]
         public void resolves_registrations_from_root_assembly(Type testedType, Type[] expectedInterfaces, Type[] expectedDependencyTypes, int expectedDependancyLevel, int expectedLifetime)
         {
             // Arrange
@@ -28,7 +29,7 @@ namespace Manisero.AutoRegistrar.IntegrationTests
 
             // Assert
             var testedRegistration = result.Single(x => x.ClassType == testedType);
-            
+            testedRegistration.InterfaceTypes.ShouldAllBeEquivalentTo(expectedInterfaces);
         }
     }
 }
