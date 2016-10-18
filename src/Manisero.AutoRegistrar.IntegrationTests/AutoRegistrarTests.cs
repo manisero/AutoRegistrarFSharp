@@ -14,8 +14,11 @@ namespace Manisero.AutoRegistrar.IntegrationTests
         [Theory]
         [InlineData(typeof(R1), new[] { typeof(IR1) }, new Type[0], 0, 1)]
         [InlineData(typeof(R2), new[] { typeof(R2_Base), typeof(IR2_Base), typeof(IR2_1), typeof(IR2_2) }, new Type[0], 0, 3)]
-        [InlineData(typeof(C1A_R1), new Type[0], new[] {typeof(R1) }, 1, 1)]
+        [InlineData(typeof(C1A_R1), new Type[0], new[] { typeof(R1) }, 1, 1)]
         [InlineData(typeof(C1A_IR1), new Type[0], new[] { typeof(R1) }, 1, 1)]
+        [InlineData(typeof(C1B_R1_R2), new[] { typeof(IC1B_R1_R2) }, new[] { typeof(R1), typeof(R2) }, 1, 3)]
+        [InlineData(typeof(C1C_R1_R1), new[] { typeof(IC1C_R1_R1) }, new[] { typeof(R1) }, 1, 5)]
+        [InlineData(typeof(C2A_R2_C1C), new[] { typeof(IC2A_R2_C1C) }, new[] { typeof(R2), typeof(C1C_R1_R1) }, 2, 5)]
         public void resolves_registrations_from_root_assembly(Type testedType, Type[] expectedInterfaces, Type[] expectedDependencyTypes, int expectedDependancyLevel, int expectedLifetime)
         {
             // Arrange
@@ -23,7 +26,8 @@ namespace Manisero.AutoRegistrar.IntegrationTests
                 {
                     new Registration(typeof(R2)) { Lifetime = 3 },
                     new Registration(typeof(C1A_R1)) { InterfaceTypes = new List<Type>() },
-                    new Registration(typeof(C1A_IR1)) { InterfaceTypes = new List<Type>() }
+                    new Registration(typeof(C1A_IR1)) { InterfaceTypes = new List<Type>() },
+                    new Registration(typeof(C1C_R1_R1)) { Lifetime = 5 }
                 };
 
             var rootAssembly = typeof(R1).Assembly;
