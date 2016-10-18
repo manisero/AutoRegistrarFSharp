@@ -1,5 +1,7 @@
 ﻿module Manisero.AutoRegistrar.SharedTests
 
+open System
+open System.Collections.Generic
 open System.Linq
 open Xunit
 open FsUnit.Xunit
@@ -10,11 +12,11 @@ open Shared
 
 // test data
 
-let r1Reg = new Registration(typeof<R1>, InterfaceTypes = Some [typeof<IR1>])
-let r2Reg = new Registration(typeof<R2>, InterfaceTypes = Some [typeof<R2_Base>; typeof<IR2_1>; typeof<IR2_2>])
-let c1aReg = new Registration(typeof<C1A_R1>, InterfaceTypes = Some [typeof<IC1A_R1>])
-let multiImpl1Reg = new Registration(typeof<MultiImpl1>, InterfaceTypes = Some [typeof<IMultiImpls>])
-let multiImpl2Reg = new Registration(typeof<MultiImpl2>, InterfaceTypes = Some [typeof<IMultiImpls>])
+let r1Reg = new Registration(typeof<R1>, InterfaceTypes = new List<Type>([typeof<IR1>]))
+let r2Reg = new Registration(typeof<R2>, InterfaceTypes = new List<Type>([typeof<R2_Base>; typeof<IR2_1>; typeof<IR2_2>]))
+let c1aReg = new Registration(typeof<C1A_R1>, InterfaceTypes = new List<Type>([typeof<IC1A_R1>]))
+let multiImpl1Reg = new Registration(typeof<MultiImpl1>, InterfaceTypes = new List<Type>([typeof<IMultiImpls>]))
+let multiImpl2Reg = new Registration(typeof<MultiImpl2>, InterfaceTypes = new List<Type>([typeof<IMultiImpls>]))
 
 // buildTypesSet
 
@@ -64,9 +66,9 @@ let ``buildTypeToRegMap: single impl -> inter included`` inter impl =
 
 let buildTypeToRegMapErrorCases =
     [
-        [(typeof<MultiImpl1>, [typeof<IMultiImpls>]); (typeof<MultiImpl2>, [typeof<IMultiImpls>])];
-        [(typeof<R2>, [typeof<IR2_1>]); (typeof<R2>, [typeof<IR2_2>])];
-        [(typeof<R2>, [typeof<R2_Base>]); (typeof<R2_Base>, [typeof<IR2_Base>])];
+        [(typeof<MultiImpl1>, new List<Type>([typeof<IMultiImpls>])); (typeof<MultiImpl2>, new List<Type>([typeof<IMultiImpls>]))];
+        [(typeof<R2>, new List<Type>([typeof<IR2_1>])); (typeof<R2>, new List<Type>([typeof<IR2_2>]))];
+        [(typeof<R2>, new List<Type>([typeof<R2_Base>])); (typeof<R2_Base>, new List<Type>([typeof<IR2_Base>]))];
     ]
 
 [<Theory>]
@@ -74,6 +76,6 @@ let buildTypeToRegMapErrorCases =
 [<InlineData(1)>]
 [<InlineData(2)>]
 let ``buildTypeToRegMap: multiple impls -> error`` case =
-    let regs = buildTypeToRegMapErrorCases.[case] |> List.map (fun (clas, inters) -> new Registration(clas, InterfaceTypes = Some inters))
+    let regs = buildTypeToRegMapErrorCases.[case] |> List.map (fun (clas, inters) -> new Registration(clas, InterfaceTypes = inters))
 
     (fun () -> buildTypeToRegMap regs) |> assertInvalidOp

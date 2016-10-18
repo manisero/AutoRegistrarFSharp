@@ -55,43 +55,43 @@ let ``handleInterType: inter not in handledTypes nor typeToRegMap keys -> added 
     handleInterType handledTypes typeToRegMap r1Reg typeof<IR1>
 
     r1Reg.InterfaceTypes |> should not' (be Null)
-    r1Reg.InterfaceTypes.Value |> should contain typeof<IR1>
+    r1Reg.InterfaceTypes |> should contain typeof<IR1>
     typeToRegMap |> should contain (new KeyValuePair<Type, Registration>(typeof<IR1>, r1Reg))
     handledTypes |> should not' (contain typeof<IR1>)
     
 
 [<Fact>]
 let ``handleInterType: inter not in handledTypes but in typeToRegMap keys -> removed from reg's interfaceTypes and map and added to handledTypes``() =
-    let multiImpl1Reg = new Registration(multiImpl1Reg.ClassType, InterfaceTypes = Some [typeof<IMultiImpls>])
+    let multiImpl1Reg = new Registration(multiImpl1Reg.ClassType, InterfaceTypes = new List<Type>([typeof<IMultiImpls>]))
     let handledTypes = new HashSet<Type>()
     let typeToRegMap = new Dictionary<Type, Registration>(dict [(typeof<IMultiImpls>, multiImpl1Reg)])
 
     handleInterType handledTypes typeToRegMap multiImpl1Reg typeof<IMultiImpls>
 
-    multiImpl1Reg.InterfaceTypes.Value |> should not' (contain typeof<IMultiImpls>)
+    multiImpl1Reg.InterfaceTypes |> should not' (contain typeof<IMultiImpls>)
     typeToRegMap |> should not' (contain (new KeyValuePair<Type, Registration>(typeof<IMultiImpls>, multiImpl1Reg)))
     handledTypes |> should contain typeof<IMultiImpls>
 
 [<Fact>]
 let ``handleInterType: inter in handledTypes -> ignored``() =
-    let r1Reg = new Registration(r1Reg.ClassType, InterfaceTypes = Some [])
+    let r1Reg = new Registration(r1Reg.ClassType, InterfaceTypes = new List<Type>())
     let handledTypes = new HashSet<Type>([typeof<IR1>])
 
     handleInterType handledTypes null r1Reg typeof<IR1>
 
-    r1Reg.InterfaceTypes.Value |> should not' (contain typeof<IR1>)
+    r1Reg.InterfaceTypes |> should not' (contain typeof<IR1>)
 
 // BuildImplementationMap
 let BuildImplementationMapCases =
     [
-        (r1Reg.ClassType, []);
-        (r2Reg.ClassType, [typeof<IR2_2>; typeof<IR2_1>; typeof<IR2_Base>; typeof<R2_Base>]);
-        (c1aReg.ClassType, [typeof<IC1A_R1>]);
-        (noIntersReg.ClassType, []);
-        (multiImpl1Reg.ClassType, []);
-        (multiImpl2Reg.ClassType, []);
-        (multiImpl2_1Reg.ClassType, [typeof<IMultiImpls2_1>]);
-        (multiImpl2_2Reg.ClassType, [typeof<IMultiImpls2_2>])
+        (r1Reg.ClassType, new List<Type>());
+        (r2Reg.ClassType, new List<Type>([typeof<IR2_2>; typeof<IR2_1>; typeof<IR2_Base>; typeof<R2_Base>]));
+        (c1aReg.ClassType, new List<Type>([typeof<IC1A_R1>]));
+        (noIntersReg.ClassType, new List<Type>());
+        (multiImpl1Reg.ClassType, new List<Type>());
+        (multiImpl2Reg.ClassType, new List<Type>());
+        (multiImpl2_1Reg.ClassType, new List<Type>([typeof<IMultiImpls2_1>]));
+        (multiImpl2_2Reg.ClassType, new List<Type>([typeof<IMultiImpls2_2>]))
     ]
 
 [<Theory>]
@@ -106,14 +106,14 @@ let BuildImplementationMapCases =
 let ``BuildImplementationMap: success scenario`` case =
     let regs =
         [
-            new Registration(r1Reg.ClassType, InterfaceTypes = Some []);
+            new Registration(r1Reg.ClassType, InterfaceTypes = new List<Type>());
             new Registration(r2Reg.ClassType);
             new Registration(c1aReg.ClassType);
             new Registration(noIntersReg.ClassType);
             new Registration(multiImpl1Reg.ClassType);
             new Registration(multiImpl2Reg.ClassType);
-            new Registration(multiImpl2_1Reg.ClassType, InterfaceTypes = Some [typeof<IMultiImpls2_1>]);
-            new Registration(multiImpl2_2Reg.ClassType, InterfaceTypes = Some [typeof<IMultiImpls2_2>])
+            new Registration(multiImpl2_1Reg.ClassType, InterfaceTypes = new List<Type>([typeof<IMultiImpls2_1>]));
+            new Registration(multiImpl2_2Reg.ClassType, InterfaceTypes = new List<Type>([typeof<IMultiImpls2_2>]))
         ]
     let (regClass, expInters) = BuildImplementationMapCases.[case]
 
@@ -122,7 +122,7 @@ let ``BuildImplementationMap: success scenario`` case =
     res |> should equal regs
     let resInters = regs |> List.find (fun x -> x.ClassType = regClass) |> (fun x -> x.InterfaceTypes)
     resInters |> should not' (be Null)
-    resInters.Value |> should equal expInters
+    resInters |> assertContains expInters
 
 [<Theory>]
 [<InlineData(typeof<IR2_1>)>]

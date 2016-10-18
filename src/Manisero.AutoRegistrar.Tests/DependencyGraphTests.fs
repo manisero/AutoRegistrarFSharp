@@ -11,11 +11,11 @@ open DependencyGraph
 
 // test data
 
-let r1Reg = new Registration(typeof<R1>, InterfaceTypes = Some [typeof<IR1>])
-let r2Reg = new Registration(typeof<R2>, InterfaceTypes = Some [typeof<R2_Base>; typeof<IR2_1>; typeof<IR2_2>])
-let c1aReg = new Registration(typeof<C1A_R1>, InterfaceTypes = Some [typeof<IC1A_R1>])
-let c1bReg = new Registration(typeof<C1B_R1_R2>, InterfaceTypes = Some [typeof<IC1B_R1_R2>])
-let c1cReg = new Registration(typeof<C1C_R1_R1>, InterfaceTypes = Some [typeof<IC1C_R1_R1>])
+let r1Reg = new Registration(typeof<R1>, InterfaceTypes = new List<Type>([typeof<IR1>]))
+let r2Reg = new Registration(typeof<R2>, InterfaceTypes = new List<Type>([typeof<R2_Base>; typeof<IR2_1>; typeof<IR2_2>]))
+let c1aReg = new Registration(typeof<C1A_R1>, InterfaceTypes = new List<Type>([typeof<IC1A_R1>]))
+let c1bReg = new Registration(typeof<C1B_R1_R2>, InterfaceTypes = new List<Type>([typeof<IC1B_R1_R2>]))
+let c1cReg = new Registration(typeof<C1C_R1_R1>, InterfaceTypes = new List<Type>([typeof<IC1C_R1_R1>]))
 
 // getDepTypes
 

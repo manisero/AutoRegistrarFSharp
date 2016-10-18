@@ -18,10 +18,10 @@ let assertEqualsNullable (exp:'a Nullable) (item:'a Nullable) =
     | false -> item |> should be Null
 
 let assertContains items list =
-    items |> List.iter (fun x -> list |> should contain x)
+    items |> Seq.iter (fun x -> list |> should contain x)
 
 let assertNotContains items list =
-    items |> List.iter (fun x -> list |> should not' (contain x))
+    items |> Seq.iter (fun x -> list |> should not' (contain x))
 
 let assertInvalidOp action =
     (fun () -> action() |> ignore) |> should throw typeof<InvalidOperationException>

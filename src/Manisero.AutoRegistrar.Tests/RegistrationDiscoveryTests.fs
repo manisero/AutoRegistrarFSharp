@@ -1,6 +1,7 @@
 ﻿module Manisero.AutoRegistrar.RegistrationDiscoveryTests
 
 open System
+open System.Collections.Generic
 open Xunit
 open FsUnit.Xunit
 open Manisero.AutoRegistrar.Domain
@@ -11,13 +12,13 @@ open RegistrationDiscovery
 
 // test data
 
-let intInters = None
+let intInters = null
 let intLifetime = Nullable()
 let intReg = new Registration(typeof<int>, InterfaceTypes = intInters, Lifetime = intLifetime)
-let r1Inters = Some []
+let r1Inters = new List<Type>()
 let r1Lifetime = Nullable()
 let r1Reg = new Registration(typeof<R1>, InterfaceTypes = r1Inters, Lifetime = r1Lifetime)
-let r2Inters = Some [typeof<IR2_1>; typeof<IR2_2>]
+let r2Inters = new List<Type>([typeof<IR2_1>; typeof<IR2_2>])
 let r2Lifetime = Nullable 3
 let r2Reg = new Registration(typeof<R2>, InterfaceTypes = r2Inters, Lifetime = r2Lifetime)
 
@@ -47,9 +48,9 @@ let ``some initRegs -> no duplicates``() =
 
     res |> Seq.distinctBy (fun x -> x.ClassType) |> Seq.length |> should equal res.Length
 
-let assertIntersAndLife typ (expInters:Type list option) (expLife:Nullable<int>) (regs:Registration list) =
+let assertIntersAndLife typ (expInters:IList<Type>) (expLife:Nullable<int>) (regs:Registration list) =
     let reg = regs |> List.find (fun x -> x.ClassType = typ)
-    reg.InterfaceTypes |> assertEqualsOption expInters
+    reg.InterfaceTypes |> should equal expInters
     reg.Lifetime |> assertEqualsNullable expLife
 
 [<Fact>]

@@ -5,25 +5,35 @@ open System.Collections.Generic
 open Manisero.AutoRegistrar.Domain
 
 let buildTypesSet (regs:Registration list) =
-    let addToSet (set:HashSet<Type>) typ =
+    let addTypToSet (set:HashSet<Type>) typ =
         match set.Add typ with
         | true -> ignore null
         | false -> invalidOp (sprintf "Multiple registrations found for '%s' type." typ.FullName)
 
+    let addRegToSet (set:HashSet<Type>) (reg:Registration) =
+        addTypToSet set reg.ClassType
+
+        if (not (isNull reg.InterfaceTypes))
+        then reg.InterfaceTypes |> Seq.iter (addTypToSet set)
+
     let set = new HashSet<Type>()
-    regs |> List.map (fun x -> x.ClassType :: (defaultArg x.InterfaceTypes [])) |> List.concat |> List.iter (addToSet set)
+    regs |> Seq.iter (addRegToSet set)
 
     set :> ISet<Type>
 
 let buildTypeToRegMap (regs:Registration list) =
-    let getInterToRegList (reg:Registration) = (defaultArg reg.InterfaceTypes []) |> List.map (fun x -> (x, reg))
-
-    let addToMap (map:Dictionary<Type, Registration>) (typ, reg) =
+    let addTypToMap (map:Dictionary<Type, Registration>) reg typ =
         if (map.ContainsKey typ)
         then invalidOp (sprintf "Multiple registrations found for '%s' type." typ.FullName)
         else map.Add(typ, reg)
+
+    let addRegToMap (map:Dictionary<Type, Registration>) reg =
+        addTypToMap map reg reg.ClassType
+
+        if (not (isNull reg.InterfaceTypes))
+        then reg.InterfaceTypes |> Seq.iter (addTypToMap map reg)
     
     let map = new Dictionary<Type, Registration>()
+    regs |> Seq.iter (addRegToMap map)
 
-    regs |> List.map (fun x -> (x.ClassType, x) :: getInterToRegList x) |> List.concat |> List.iter (addToMap map)
     map :> IDictionary<Type, Registration>

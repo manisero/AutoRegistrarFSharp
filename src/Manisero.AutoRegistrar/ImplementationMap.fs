@@ -19,15 +19,21 @@ let getClassInterfaces (typ:Type) =
 
 let handleInterType (handledTypes:ISet<Type>) (typeToRegMap:IDictionary<Type, Registration>) (reg:Registration) inter =
     let handleConflict (existingReg:Registration) =
-        existingReg.InterfaceTypes <- (defaultArg existingReg.InterfaceTypes []) |> List.filter (fun x -> x <> inter) |> Some
+        match existingReg.InterfaceTypes with
+        | null -> ignore null
+        | inters -> ignore (inters.Remove inter)
+
         ignore (typeToRegMap.Remove inter)
         ignore (handledTypes.Add inter)
 
     let handleNew() =
-        reg.InterfaceTypes <- inter :: (defaultArg reg.InterfaceTypes []) |> Some
+        match reg.InterfaceTypes with
+        | null -> reg.InterfaceTypes <- new List<Type>([inter])
+        | inters -> inters.Add(inter)
+
         typeToRegMap.Add(inter, reg)
 
-    if (handledTypes.Contains(inter))
+    if (handledTypes.Contains inter)
     then ignore null
     else
         let mutable existingReg = null
@@ -40,13 +46,13 @@ let BuildImplementationMap regs =
     let handleInters handledTypes typeToRegMap (reg:Registration) =
         reg.ClassType |> getClassInterfaces |> List.iter (handleInterType handledTypes typeToRegMap reg)
 
-        if (reg.InterfaceTypes.IsNone)
-        then reg.InterfaceTypes <- Some []
+        if (isNull reg.InterfaceTypes)
+        then reg.InterfaceTypes <- new List<Type>()
 
     regs |> List.iter validateReg
 
     let handledTypes = buildTypesSet regs
     let typeToRegMap = buildTypeToRegMap regs
 
-    regs |> List.filter (fun x -> x.InterfaceTypes.IsNone) |> List.iter (handleInters handledTypes typeToRegMap)
+    regs |> List.filter (fun x -> isNull x.InterfaceTypes) |> List.iter (handleInters handledTypes typeToRegMap)
     regs
