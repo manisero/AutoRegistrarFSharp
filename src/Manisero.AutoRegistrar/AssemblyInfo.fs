@@ -10,7 +10,7 @@ open System.Runtime.InteropServices
 [<assembly: AssemblyTitle("Manisero.AutoRegistrar")>]
 [<assembly: AssemblyDescription("Automatic DI Container registrations resolver.")>]
 [<assembly: AssemblyConfiguration("")>]
-[<assembly: AssemblyCompany("")>]
+[<assembly: AssemblyCompany("manisero")>]
 [<assembly: AssemblyProduct("Manisero.AutoRegistrar")>]
 [<assembly: AssemblyCopyright("Copyright © 2016 manisero")>]
 [<assembly: AssemblyTrademark("")>]

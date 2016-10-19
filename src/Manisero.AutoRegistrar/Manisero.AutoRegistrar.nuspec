@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/manisero/AutoRegistrarFSharp/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/manisero/AutoRegistrarFSharp</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <copyright>Copyright 2016 manisero</copyright>
+    <tags>DI Dependency Injection registration</tags>
+  </metadata>
+</package>
