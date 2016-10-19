@@ -2,7 +2,6 @@
 
 open System
 open System.Collections.Generic
-open Manisero.AutoRegistrar.Domain
 open Internal.AssemblyDiscovery
 open Internal.RegistrationDiscovery
 open Internal.ImplementationMap

@@ -4,7 +4,7 @@ open System
 open System.Collections.Generic
 open Xunit
 open FsUnit.Xunit
-open Manisero.AutoRegistrar.Domain
+open Manisero.AutoRegistrar
 open Manisero.AutoRegistrar.TestClasses
 open TestsHelpers
 open Internal.DependencyGraph

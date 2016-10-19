@@ -1,4 +1,4 @@
-﻿namespace Manisero.AutoRegistrar.Domain
+﻿namespace Manisero.AutoRegistrar
 
 open System
 open System.Collections.Generic

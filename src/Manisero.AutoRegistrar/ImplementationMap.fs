@@ -2,7 +2,7 @@
 
 open System
 open System.Collections.Generic
-open Manisero.AutoRegistrar.Domain
+open Manisero.AutoRegistrar
 open Shared
 
 let validateReg (reg:Registration) =

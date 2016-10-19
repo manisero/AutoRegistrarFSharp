@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using FluentAssertions;
-using Manisero.AutoRegistrar.Domain;
 using Manisero.AutoRegistrar.TestClasses;
 using Xunit;
 

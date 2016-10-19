@@ -1,7 +1,7 @@
 ﻿module Manisero.AutoRegistrar.Internal.Lifetimes
 
 open System
-open Manisero.AutoRegistrar.Domain
+open Manisero.AutoRegistrar
 
 let resolveLifetime (reg:Registration) =
     if (reg.Lifetime.HasValue)

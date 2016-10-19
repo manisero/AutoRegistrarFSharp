@@ -5,7 +5,7 @@ open System.Collections.Generic
 open System.Linq
 open Xunit
 open FsUnit.Xunit
-open Manisero.AutoRegistrar.Domain
+open Manisero.AutoRegistrar
 open Manisero.AutoRegistrar.TestClasses
 open TestsHelpers
 open Internal.Shared

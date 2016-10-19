@@ -2,7 +2,7 @@
 
 open System
 open System.Collections.Generic
-open Manisero.AutoRegistrar.Domain
+open Manisero.AutoRegistrar
 
 let buildTypesSet (regs:Registration list) =
     let addTypToSet (set:HashSet<Type>) typ =

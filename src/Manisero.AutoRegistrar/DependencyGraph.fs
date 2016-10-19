@@ -3,7 +3,7 @@
 open System
 open System.Collections.Generic
 open Shared
-open Manisero.AutoRegistrar.Domain
+open Manisero.AutoRegistrar
 
 let getDepTypes (clas:Type) =
     let ctor =

@@ -1,7 +1,7 @@
 ﻿module Manisero.AutoRegistrar.Internal.DependancyLevels
 
 open System
-open Manisero.AutoRegistrar.Domain
+open Manisero.AutoRegistrar
 
 let tryAssignLvl (reg:Registration) =
     let getMaxDepLvl (reg:Registration) = reg.Dependencies |> Seq.map (fun x -> x.DependancyLevel.Value) |> Seq.max

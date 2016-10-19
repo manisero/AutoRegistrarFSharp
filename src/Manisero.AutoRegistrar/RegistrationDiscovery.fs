@@ -3,7 +3,7 @@
 open System
 open System.Collections.Generic
 open System.Reflection
-open Manisero.AutoRegistrar.Domain
+open Manisero.AutoRegistrar
 
 let buildTypFilter (initTypes:ISet<Type>) customFilter =
     match customFilter with
