@@ -7,7 +7,7 @@ open FsUnit.Xunit
 open Manisero.AutoRegistrar.Domain
 open Manisero.AutoRegistrar.TestClasses
 open TestsHelpers
-open Lifetimes
+open Internal.Lifetimes
 
 // test data
 

@@ -1,4 +1,4 @@
-﻿module Manisero.AutoRegistrar.DependancyLevels
+﻿module Manisero.AutoRegistrar.Internal.DependancyLevels
 
 open System
 open Manisero.AutoRegistrar.Domain

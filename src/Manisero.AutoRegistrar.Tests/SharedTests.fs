@@ -8,7 +8,7 @@ open FsUnit.Xunit
 open Manisero.AutoRegistrar.Domain
 open Manisero.AutoRegistrar.TestClasses
 open TestsHelpers
-open Shared
+open Internal.Shared
 
 // test data
 

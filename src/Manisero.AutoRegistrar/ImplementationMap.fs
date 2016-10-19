@@ -1,4 +1,4 @@
-﻿module Manisero.AutoRegistrar.ImplementationMap
+﻿module Manisero.AutoRegistrar.Internal.ImplementationMap
 
 open System
 open System.Collections.Generic

@@ -1,4 +1,4 @@
-﻿module Manisero.AutoRegistrar.Shared
+﻿module Manisero.AutoRegistrar.Internal.Shared
 
 open System
 open System.Collections.Generic

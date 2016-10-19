@@ -1,4 +1,4 @@
-﻿module Manisero.AutoRegistrar.DependencyGraph
+﻿module Manisero.AutoRegistrar.Internal.DependencyGraph
 
 open System
 open System.Collections.Generic

@@ -5,7 +5,7 @@ open Xunit
 open FsUnit.Xunit
 open TestsHelpers
 open Manisero.AutoRegistrar.TestClasses
-open AssemblyDiscovery
+open Internal.AssemblyDiscovery
 
 // DiscoverAssemblies
 

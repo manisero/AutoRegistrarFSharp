@@ -1,4 +1,4 @@
-﻿module Manisero.AutoRegistrar.Lifetimes
+﻿module Manisero.AutoRegistrar.Internal.Lifetimes
 
 open System
 open Manisero.AutoRegistrar.Domain

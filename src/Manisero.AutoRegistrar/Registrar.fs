@@ -3,12 +3,12 @@
 open System
 open System.Collections.Generic
 open Manisero.AutoRegistrar.Domain
-open AssemblyDiscovery
-open RegistrationDiscovery
-open ImplementationMap
-open DependencyGraph
-open DependancyLevels
-open Lifetimes
+open Internal.AssemblyDiscovery
+open Internal.RegistrationDiscovery
+open Internal.ImplementationMap
+open Internal.DependencyGraph
+open Internal.DependancyLevels
+open Internal.Lifetimes
 
 let private toFun (func:Func<'a, bool>) =
     match func with

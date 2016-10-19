@@ -8,7 +8,7 @@ open Manisero.AutoRegistrar.Domain
 open TestsHelpers
 open Manisero.AutoRegistrar.TestClasses
 open Manisero.AutoRegistrar.TestClasses2
-open RegistrationDiscovery
+open Internal.RegistrationDiscovery
 
 // test data
 
