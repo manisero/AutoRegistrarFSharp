@@ -38,7 +38,7 @@ namespace Manisero.AutoRegistrar.IntegrationTests
             Func<Type, bool> typeFilter = x => !ignoredTypes.Contains(x);
 
             // Act
-            var result = AutoRegistrar.FromRootAssembly(initialRegistrations, rootAssembly, assemblyFilter, typeFilter);
+            var result = Registrar.FromRootAssembly(initialRegistrations, rootAssembly, assemblyFilter, typeFilter);
 
             // Assert
             var testedRegistration = result.Single(x => x.ClassType == testedType);

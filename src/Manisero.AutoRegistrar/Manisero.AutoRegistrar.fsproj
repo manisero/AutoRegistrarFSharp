@@ -53,7 +53,7 @@
     <Compile Include="DependencyGraph.fs" />
     <Compile Include="DependancyLevels.fs" />
     <Compile Include="Lifetimes.fs" />
-    <Compile Include="AutoRegistrar.fs" />
+    <Compile Include="Registrar.fs" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>

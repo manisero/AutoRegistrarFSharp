@@ -1,4 +1,4 @@
-﻿module Manisero.AutoRegistrar.AutoRegistrar
+﻿module Manisero.AutoRegistrar.Registrar
 
 open System
 open System.Collections.Generic
